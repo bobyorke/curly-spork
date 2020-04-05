@@ -1,28 +1,55 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <h1>Test app</h1>
+    <div 
+      class="scores bg-primary mb-2"
+      v-for="([name, score]) in orderedScores"
+      :key="name"
+    >
+      {{ name }}: {{ score }}
+    </div>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import axios from 'axios';
 
 export default {
   name: 'App',
-  components: {
-    HelloWorld
-  }
+  data() {
+    return {
+      scores: {},
+    };
+  },
+  computed: {
+    orderedScores() {
+      return Object.entries(this.scores)
+        .sort((a, b) => a[1] - b[1]);
+    },
+  },
+  methods: {
+    updateScores() {
+      axios.get('/scoresApi/test')
+        .then(response => {
+          this.scores = response.data;
+        })
+        .catch(err => {
+          // eslint-disable-next-line
+          console.log(`Error getting scores: ${err}`);
+        })
+        .finally(() => {
+          setTimeout(this.updateScores, 2000);
+        });
+    },
+  },
+  mounted() {
+    this.updateScores();
+  },
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+.scores {
+  transition: top 2s;
 }
 </style>
