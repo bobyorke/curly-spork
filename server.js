@@ -15,7 +15,7 @@ app.use(cors());
 app.use('/api/', apiRoutes);
 app.use('/scoresApi/', apiRoutes);
 
-app.use('/scores', express.static(path.join(__dirname, 'dist')));
+app.use(express.static(path.join(__dirname, 'dist')));
 
 const port = process.env.HTTP_PORT || 8081;
 app.listen(port, () => {
