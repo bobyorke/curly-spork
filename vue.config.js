@@ -1,5 +1,4 @@
 module.exports = {
-  publicPath: '/scores/',
   devServer: {
     disableHostCheck: true,
     proxy: {
