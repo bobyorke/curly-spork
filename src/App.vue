@@ -3,7 +3,7 @@
     <div id='leaders'>
       <h1>Test app</h1>
       <div 
-        class="scores bg-primary mb-2 leader"
+        class="scores leader"
         v-for="[name, score] in orderedScores"
         :key="name"
         :ref="`score_${name}`"
@@ -62,10 +62,13 @@ export default {
     updateFollowers() {
       for(let i = 0; i < this.arrayScores.length; i++) {
         const scoreName = Object.keys(this.scores)[i];
-        const pos = $(this.$refs[`score_${scoreName}`][0]).position();
+        const ldr = $(this.$refs[`score_${scoreName}`][0]);
+        const pos = ldr.position();
         const flw = $(this.$refs.score_follow[i]);
         flw.css('top', pos.top);
         flw.css('left', pos.left);
+        flw.css('height', ldr.innerHeight());
+        flw.css('width', ldr.innerWidth());
       }
     }, 
   },
@@ -76,20 +79,29 @@ export default {
 </script>
 
 <style>
+
+body {
+  background: #021636;
+  color: #ffffff;
+}
+
 .scores {
   width: 200px;
-  height: 25px;
+  padding: 8px;
+  margin-bottom: 6px;
 }
 #leaders {
   margin: 100px;
 }
 .leader {
   visibility: hidden;
+  /*background: red;*/
 }
 .follower {
+  background-image: linear-gradient(to right, #032d61, #0163dd);
   position: absolute;
-  top: 400px;
-  left: -300px;
+  top: 1200px;
+  left: 900px;
   transition: top 1s, left 1s;
 }
 </style>
