@@ -8,7 +8,7 @@ router.get('/test', (req, res) => {
   const names = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
   res.json(
     Object.fromEntries(
-      names.map(x => [x, Math.floor(Math.random() * 100)]),
+      names.map((x) => [x, Math.floor(Math.random() * 100)]),
     ),
   );
 });

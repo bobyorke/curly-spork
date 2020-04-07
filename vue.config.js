@@ -5,6 +5,6 @@ module.exports = {
       '^/scoresApi': {
         target: 'http://localhost:8081',
       },
-    }
+    },
   },
 };

@@ -1,6 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
-const cors = require('cors')
+const cors = require('cors');
 const path = require('path');
 
 const apiRoutes = require('./apiRoutes.js');
@@ -21,4 +21,3 @@ const port = process.env.HTTP_PORT || 8081;
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
-
