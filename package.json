@@ -17,7 +17,9 @@
     "express": "^4.17.1",
     "jquery": "^3.4.1",
     "morgan": "^1.10.0",
+    "node-sass": "^4.13.1",
     "popper.js": "^1.16.1",
+    "sass-loader": "^8.0.2",
     "vue": "^2.6.11"
   },
   "devDependencies": {

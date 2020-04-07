@@ -78,7 +78,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 
 body {
   background: #021636;
@@ -104,4 +104,5 @@ body {
   left: 900px;
   transition: top 1s, left 1s;
 }
+
 </style>
