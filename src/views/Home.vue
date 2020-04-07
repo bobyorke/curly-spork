@@ -60,7 +60,7 @@ export default {
         });
     },
     updateFollowers() {
-      for (let i = 0; i < this.arrayScores.length; i++) {
+      for (let i = 0; i < this.arrayScores.length; i += 1) {
         const scoreName = Object.keys(this.scores)[i];
         const ldr = $(this.$refs[`score_${scoreName}`][0]);
         const pos = ldr.position();
