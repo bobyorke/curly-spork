@@ -16,7 +16,14 @@ router.get('/test', (req, res) => {
 
 router.post('/put/:scoresId/:dataType', (req, res) => {
   db.put(req.params.scoresId, req.params.dataType, req.body)
-    .then(
+    .then(() => { res.send('OK'); })
+    .catch((err) => { res.status(500).send(`Error writing to database: ${err}`); });
+});
+
+router.get('/get/:scoresId/:dataType', (req, res) => {
+  db.get(req.params.scoresId, req.params.dataType)
+    .then((data) => { res.json(data); })
+    .catch((err) => { res.status(500).send(`Error reading from database: ${err}`); });
 });
 
 module.exports = router;
