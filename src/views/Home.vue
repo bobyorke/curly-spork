@@ -99,8 +99,8 @@ body {
 .follower {
   background-image: linear-gradient(to right, #032d61, #0163dd);
   position: absolute;
-  top: 1200px;
-  left: 900px;
+  top: 200px;
+  left: -300px;
   transition: top 1s, left 1s;
 }
 
