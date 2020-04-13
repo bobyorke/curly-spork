@@ -1,14 +1,15 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Home from '../views/Home.vue';
+import Scores from '../views/Scores.vue';
+import NotFound from '../views/NotFound.vue';
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home,
+    name: 'Scores',
+    component: Scores,
   },
   {
     path: '/create',
@@ -17,6 +18,16 @@ const routes = [
     // this generates a separate chunk (create.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "create" */ '../views/Create.vue'),
+  },
+  {
+    path: '/admin/*',
+    name: 'Admin',
+    component: () => import(/* webpackChunkName: "admin" */ '../views/Admin.vue'),
+  },
+  {
+    path: '*',
+    name: 'not found',
+    component: NotFound,
   },
 ];
 

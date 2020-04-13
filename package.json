@@ -1,5 +1,5 @@
 {
-  "name": "eurovision",
+  "name": "coronavision",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -22,6 +22,7 @@
     "node-sass": "^4.13.1",
     "popper.js": "^1.16.1",
     "sass-loader": "^8.0.2",
+    "uuid": "^7.0.3",
     "vue": "^2.6.11",
     "vue-router": "^3.1.6"
   },
