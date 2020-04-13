@@ -20,7 +20,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "create" */ '../views/Create.vue'),
   },
   {
-    path: '/admin/*',
+    path: '/admin/:uuid',
     name: 'Admin',
     component: () => import(/* webpackChunkName: "admin" */ '../views/Admin.vue'),
   },
