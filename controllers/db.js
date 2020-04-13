@@ -48,8 +48,19 @@ async function createContest(scoresId, adminUuid) {
       });
 }
 
+async function getScoresId(adminUuid) {
+  if (!adminUuid) { throw Error('adminUuid missing'); }
+  return (await db).collection('contests')
+    .findOne({ adminUuid })
+    .catch((err) => {
+      console.log(`Error in findOne from 'contests' collection: ${err.errmsg}`);
+      throw err;
+    });
+}
+
 module.exports = {
   put,
   get, 
   createContest,
+  getScoresId,
 };

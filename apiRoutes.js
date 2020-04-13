@@ -28,6 +28,18 @@ router.post('/create', (req, res) => {
     });
 });
 
+router.get('/getScoresId/:uuid', (req, res) => {
+  db.getScoresId(req.params.uuid)
+    .then((scoresId) => {
+      if (scoresId) { res.json({ scoresId: scoresId.scoresId }); }
+      else { res.status(404).send(`No scores ID found for ${req.params.uuid}`); }
+    })
+    .catch((err) => {
+      console.log(`Error getting scores ID: ${err.stack}`);
+      res.status(500).send(`Error getting scores ID: ${err.message}`);
+    });
+});
+
 router.post('/put/:scoresId/:dataType', (req, res) => {
   db.put(req.params.scoresId, req.params.dataType, req.body)
     .then(() => { res.send('OK'); })
