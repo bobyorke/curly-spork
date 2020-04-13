@@ -14,6 +14,20 @@ router.get('/test', (req, res) => {
   );
 });
 
+router.post('/create', (req, res) => {
+  console.log(`body: ${JSON.stringify(req.body, null, 2)}`);
+  db.createContest(req.body.sid, req.body.uuid)
+    .then(() => { 
+      res.json({
+        status: 'ok',
+      });
+    })
+    .catch((err) => {
+      console.log(`Error creating contest: ${err.stack}`);
+      res.status(500).send(`Error creating contest: ${err.message}`);
+    });
+});
+
 router.post('/put/:scoresId/:dataType', (req, res) => {
   db.put(req.params.scoresId, req.params.dataType, req.body)
     .then(() => { res.send('OK'); })

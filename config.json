@@ -1,4 +1,7 @@
 {
+  "mongoOptions": {
+    "useUnifiedTopology": true
+  },
   "flags": {
     "albania": "./assets/flags/Albania.png",
     "andorra": "./assets/flags/Andorra.png",
