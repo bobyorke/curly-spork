@@ -54,6 +54,9 @@ export default {
       axios.post('/scoresApi/create', this.form)
         .then(() => {
           this.submitStatus = true;
+          setTimeout(() => {
+            window.location.href = this.adminUrl;
+          }, 2000);
         })
         .catch((err) => {
           // eslint-disable-next-line
