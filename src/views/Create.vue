@@ -1,18 +1,24 @@
 <template>
   <div id="create">
     <h2>Create new contest</h2>
-    <b-form inline @submit="onSubmit">
+    <b-form inline @submit="onSubmit" v-if="submitStatus === undefined">
       <label>Identifier:</label>
       <b-input class="ml-2" v-model="form.sid"></b-input>
-      <b-input class="ml-2" v-model="form.uuid"></b-input>
       <b-button class="ml-2" variant="primary" type="submit">Create!</b-button>
     </b-form>
-    <div>
+    <div v-else-if="submitStatus === false">
+      <b-spinner variant="success"></b-spinner>
+    </div>
+    <div v-else-if="submitStatus === true">
+      <p>Submitted!</p>
+    </div>
+    <div class="mt-3">
       <p>
-        This contest can be administered from <a
+        This contest can be administered from:-<br /><a
           :href="`/admin/${this.form.uuid}`"
           target="_blank"
-        >{{ adminUrl }}</a>
+        >{{ adminUrl }}</a><br />
+        <strong>Make a note of this! You'll need it.</strong>
       </p>
     </div>
   </div>
@@ -20,10 +26,12 @@
 
 <script>
 import { v4 as uuid } from 'uuid';
+import axios from 'axios';
 
 export default {
   data() {
     return {
+      submitStatus: undefined,
       form: {
         sid: this.getRandomSid(),
         uuid: uuid(),
@@ -41,12 +49,22 @@ export default {
         .slice(-10);
     },
     onSubmit(evt) {
-      console.log('onSubmit() called');
-      console.dir(evt);
-      console.dir(this);
       evt.preventDefault();
-      // eslint-disable-next-line
-      alert(JSON.stringify(this.form, null, 2));
+      this.submitStatus = false;
+      axios.post('/scoresApi/create', this.form)
+        .then(() => {
+          this.submitStatus = true;
+        })
+        .catch((err) => {
+          // eslint-disable-next-line
+          console.dir(err);
+          let errMsg = err.message;
+          try {
+            errMsg = err.response.data;
+          } catch { /* continue */ }
+          this.submitStatus = undefined;
+          this.$bvModal.msgBoxOk(`Error on submission: ${errMsg}`);
+        });
     },
   },
 };
