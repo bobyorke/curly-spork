@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div id='leaders'>
+  <div id="scores" class="overflow-hidden">
+    <div id="leaders">
       <h1>Test app</h1>
       <div
         class="scores leader"
@@ -78,10 +78,12 @@ export default {
 };
 </script>
 
-<style lang="scss">
-body {
+<style scoped lang="scss">
+div#scores {
   background: #021636;
   color: #ffffff;
+  width: 1920px;
+  height: 1080px;
 }
 
 .scores {
@@ -90,7 +92,7 @@ body {
   margin-bottom: 6px;
 }
 #leaders {
-  margin: 100px;
+  margin-left: 100px;
 }
 .leader {
   visibility: hidden;
