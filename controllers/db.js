@@ -83,19 +83,27 @@ async function addSong(songData) {
   let prm;
   if (_id) {
     prm = () => coll.replaceOne(
-      { _id: mongo.ObjectID(songData._id) },
+      { _id: mongo.ObjectID(_id) },
       songData,
     );
   } else {
     prm = () => coll.insertOne(songData);
   }
-  console.log(`prm: ${JSON.stringify(prm, null, 2)}`);
   return prm()
     .catch((err) => {
       console.log(`Error adding to 'songs' collection: ${err.stack}`);
       throw err;
     });
- }
+}
+
+async function deleteSong(id) {
+  return (await db).collection('songs')
+    .deleteOne({ _id: mongo.ObjectID(id) })
+    .catch((err) => {
+      console.log(`Error deleting from 'songs' collection: ${err.stack}`);
+      throw err;
+    });
+}
 
 module.exports = {
   put,
@@ -104,4 +112,5 @@ module.exports = {
   getContest,
   getSongs,
   addSong,
+  deleteSong,
 };
