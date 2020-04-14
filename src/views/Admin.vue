@@ -15,6 +15,7 @@
       </p>
       <h3>Songs</h3>
       <SongForm v-for="sd in songs" :key="sd._id" :songData="sd" />
+      <SongForm :songData="newSongData" />
     </div>
   </div>
 </template>
@@ -30,6 +31,17 @@ export default {
     return {
       contest: undefined,
       songs: [],
+      newSongData: {
+        // eslint-disable-next-line
+        _id: -1,
+        country: null,
+        year: null,
+        englishName: null,
+        localName: null,
+        performingArtist: null,
+        credits: null,
+        chosenBy: null,
+      },
     };
   },
   components: {
