@@ -11,7 +11,6 @@ import App from './App.vue';
 import router from './router';
 
 Vue.prototype.$axios = axios;
-
 Vue.use(BootstrapVue);
 
 Vue.config.productionTip = false;

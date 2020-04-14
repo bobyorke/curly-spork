@@ -21,13 +21,13 @@
       <b-input class="ml-2" placeholder="artist(s)" v-model="form.performingArtist"></b-input>
       <b-input class="ml-2" placeholder="credits" v-model="form.credits"></b-input>
       <b-input class="ml-2" placeholder="chosen by" v-model="form.chosenBy"></b-input>
-      <b-button v-if="songData._id != -1" class="ml-2"
+      <b-button v-if="songData._id !== null" class="ml-2"
         variant="danger" type="reset"
       >reset</b-button>
       <b-button v-if="!cleared" class="ml-2"
         variant="danger" @click="clearEntry"
       >clear</b-button>
-      <b-button v-if="cleared && songData._id != -1" class="ml-2"
+      <b-button v-if="cleared && songData._id !== null" class="ml-2"
         variant="danger" @click="deleteEntry"
       >delete</b-button>
       <b-button v-if="changed && readyToSave" class="ml-2"
@@ -60,7 +60,8 @@ export default {
       cleared: false,
       form: {
         // eslint-disable-next-line
-        _id: this.songData._id || -1,
+        _id: this.songData._id || null,
+        scoresId: this.songData.scoresId,
         country: this.songData.country,
         year: this.songData.year,
         titleEnglish: this.songData.titleEnglish,
@@ -114,6 +115,12 @@ export default {
     },
     onSubmit(evt) {
       evt.preventDefault();
+      this.$axios.post('/scoresApi/addSong', this.form)
+        .then(this.$parent.getSongs)
+        .then(() => { this.clearEntry(); })
+        .catch((err) => {
+          this.$bvModal.msgBoxOk(err.response.data);
+        });
     },
     onReset(evt) {
       evt.preventDefault();

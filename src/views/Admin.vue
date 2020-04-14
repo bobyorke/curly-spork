@@ -15,7 +15,7 @@
       </p>
       <h3>Songs</h3>
       <SongForm v-for="sd in songs" :key="sd._id" :songData="sd" />
-      <SongForm :songData="newSongData" />
+      <SongForm :songData="newSongData()" />
     </div>
   </div>
 </template>
@@ -30,17 +30,6 @@ export default {
     return {
       contest: undefined,
       songs: [],
-      newSongData: {
-        // eslint-disable-next-line
-        _id: -1,
-        country: null,
-        year: null,
-        englishName: null,
-        localName: null,
-        performingArtist: null,
-        credits: null,
-        chosenBy: null,
-      },
     };
   },
   components: {
@@ -65,6 +54,20 @@ export default {
         .then((response) => { this.contest = response.data; })
         .then(this.getSongs)
         .catch(() => { this.contest = null; });
+    },
+    newSongData() {
+      return {
+        // eslint-disable-next-line
+        _id: null,
+        scoresId: this.contest.scoresId,
+        country: null,
+        year: null,
+        englishName: null,
+        localName: null,
+        performingArtist: null,
+        credits: null,
+        chosenBy: null,
+      };
     },
   },
   mounted() {
