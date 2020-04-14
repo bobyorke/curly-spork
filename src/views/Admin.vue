@@ -13,6 +13,8 @@
         Points: {{ contest.scoresOptions }}.<br />
         Created: {{ createdDateNice }}.
       </p>
+      <h3>Songs</h3>
+      <SongForm v-for="sd in songs" :key="sd._id" :songData="sd" />
     </div>
   </div>
 </template>
@@ -21,12 +23,17 @@
 import axios from 'axios';
 import moment from 'moment';
 
+import SongForm from '@/components/SongForm.vue';
+
 export default {
   data() {
     return {
       contest: undefined,
       songs: [],
     };
+  },
+  components: {
+    SongForm,
   },
   computed: {
     createdDateNice() {
@@ -45,7 +52,7 @@ export default {
     lookupScoresId() {
       axios.get(`/scoresApi/getContest/${this.$route.params.uuid}`)
         .then((response) => { this.contest = response.data; })
-        // .then(this.getSongs)
+        .then(this.getSongs)
         .catch(() => { this.contest = null; });
     },
   },

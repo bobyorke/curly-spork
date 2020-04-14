@@ -43,7 +43,7 @@ async function createContest(scoresId, adminUuid, scoresOptions = config.default
     .insertOne({
       scoresId,
       adminUuid,
-      scoresOptions,
+      scoresOptions: scoresOpts,
       creationDate: new Date(),
     })
       .catch((err) => {
@@ -66,9 +66,20 @@ async function getContest(adminUuid) {
     });
 }
 
+async function getSongs(scoresId) {
+  if (!scoresId) { throw Error('scoresId missing'); }
+  return (await db).collection('songs')
+    .find({ scoresId }).toArray()
+    .catch((err) => {
+      console.log(`Error in findOne from 'songs' collection: ${err.errmsg}`);
+      throw err;
+    });
+}
+
 module.exports = {
   put,
   get, 
   createContest,
   getContest,
+  getSongs,
 };

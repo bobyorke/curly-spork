@@ -35,8 +35,19 @@ router.get('/getContest/:uuid', (req, res) => {
       else { res.status(404).send(`No conteest found for ${req.params.uuid}`); }
     })
     .catch((err) => {
-      console.log(`Error getting scores ID: ${err.stack}`);
+      console.log(`Error getting contest: ${err.stack}`);
       res.status(500).send(`Error getting contest: ${err.message}`);
+    });
+});
+
+router.get('/getSongs/:scoresId', (req, res) => {
+  db.getSongs(req.params.scoresId)
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((err) => {
+      console.log(`Error getting songs: ${err.stack}`);
+      res.status(500).send(`Error getting songs: ${err.message}`);
     });
 });
 
