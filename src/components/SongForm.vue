@@ -1,6 +1,9 @@
 <template>
   <div class="song-form mt-2">
-    <b-form inline @submit="onSubmit" @reset="onReset" @change="onChange">
+    <b-form inline @submit="onSubmit"
+      @reset="onReset" @change="onChange"
+      autocomplete="off"
+    >
       <b-form-select class="ml-2" placeholder="country" :state="countryOk"
         v-model="form.country" :options="countryOptions">
       </b-form-select>
@@ -9,8 +12,8 @@
       </span>
       <b-input class="ml-1 form-input-year" placeholder="year"
         :state="yearOk" v-model="form.year"></b-input>
-      <b-input class="ml-2" placeholder="name (English)" v-model="form.englishName"></b-input>
-      <b-input class="ml-2" placeholder="name (local)" v-model="form.localName"></b-input>
+      <b-input class="ml-2" placeholder="song title (English)" v-model="form.titleEnglish"></b-input>
+      <b-input class="ml-2" placeholder="song title (local)" v-model="form.titleLocal"></b-input>
       <b-input class="ml-2" placeholder="artist(s)" v-model="form.performingArtist"></b-input>
       <b-input class="ml-2" placeholder="credits" v-model="form.credits"></b-input>
       <b-input class="ml-2" placeholder="chosen by" v-model="form.chosenBy"></b-input>
@@ -56,8 +59,8 @@ export default {
         _id: this.songData._id || -1,
         country: this.songData.country,
         year: this.songData.year,
-        englishName: this.songData.englishName,
-        localName: this.songData.localName,
+        titleEnglish: this.songData.titleEnglish,
+        titleLocal: this.songData.titleLocal,
         performingArtist: this.songData.performingArtist,
         credits: this.songData.credits,
         chosenBy: this.songData.chosenBy,
@@ -81,7 +84,7 @@ export default {
       return /^(?:19(?:5[6-9]|[6-9][0-9])|20[012][0-9])$/.test(this.form.year);
     },
     hasName() {
-      return !!(this.form.englishName || this.form.localName);
+      return !!(this.form.titleEnglish || this.form.titleLocal);
     },
     readyToSave() {
       return (
@@ -112,8 +115,8 @@ export default {
       evt.preventDefault();
       this.form.country = this.songData.country;
       this.form.year = this.songData.year;
-      this.form.englishName = this.songData.englishName;
-      this.form.localName = this.songData.localName;
+      this.form.titleEnglish = this.songData.titleEnglish;
+      this.form.titleLocal = this.songData.titleLocal;
       this.form.performingArtist = this.songData.performingArtist;
       this.form.credits = this.songData.credits;
       this.form.chosenBy = this.songData.chosenBy;
@@ -122,8 +125,8 @@ export default {
     clearEntry() {
       this.form.country = null;
       this.form.year = null;
-      this.form.englishName = null;
-      this.form.localName = null;
+      this.form.titleEnglish = null;
+      this.form.titleLocal = null;
       this.form.performingArtist = null;
       this.form.credits = null;
       this.form.chosenBy = null;
