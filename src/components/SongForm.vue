@@ -112,7 +112,8 @@ export default {
       this.$axios.post('/scoresApi/addSong', this.form)
         .then(() => {
           this.changed = false;
-          if (this.songData._id === null) { this.resetEntry(); }
+          // if (this.songData._id === null) { this.resetEntry(); }
+          this.resetEntry();
         })
         .catch((err) => {
           console.dir(err);

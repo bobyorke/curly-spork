@@ -14,7 +14,7 @@
         Created: {{ createdDateNice }}.
       </p>
       <h3>Songs</h3>
-      <SongForm v-for="sd in songs" :key="sd._id" :songData="sd" />
+      <SongForm v-for="sd in songs" :key="Math.random()" :songData="sd" />
       <SongForm :songData="newSongData()" />
     </div>
   </div>
