@@ -21,7 +21,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 import moment from 'moment';
 
 import SongForm from '@/components/SongForm.vue';
@@ -54,7 +53,7 @@ export default {
   },
   methods: {
     getSongs() {
-      axios.get(`/scoresApi/getSongs/${this.contest.scoresId}`)
+      this.$axios.get(`/scoresApi/getSongs/${this.contest.scoresId}`)
         .then((response) => { this.songs = response.data; })
         .catch((err) => {
           // eslint-disable-next-line
@@ -62,7 +61,7 @@ export default {
         });
     },
     lookupScoresId() {
-      axios.get(`/scoresApi/getContest/${this.$route.params.uuid}`)
+      this.$axios.get(`/scoresApi/getContest/${this.$route.params.uuid}`)
         .then((response) => { this.contest = response.data; })
         .then(this.getSongs)
         .catch(() => { this.contest = null; });

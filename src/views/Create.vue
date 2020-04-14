@@ -31,7 +31,6 @@
 
 <script>
 import { v4 as uuid } from 'uuid';
-import axios from 'axios';
 import config from '../../config.json';
 
 export default {
@@ -61,7 +60,7 @@ export default {
     onSubmit(evt) {
       evt.preventDefault();
       this.submitStatus = false;
-      axios.post('/scoresApi/create', this.form)
+      this.$axios.post('/scoresApi/create', this.form)
         .then(() => {
           this.submitStatus = true;
           setTimeout(() => {

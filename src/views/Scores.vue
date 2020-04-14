@@ -26,7 +26,6 @@
 
 <script>
 import $ from 'jquery';
-import axios from 'axios';
 
 export default {
   name: 'Scores',
@@ -46,7 +45,7 @@ export default {
   },
   methods: {
     updateScores() {
-      axios.get('/scoresApi/test')
+      this.$axios.get('/scoresApi/test')
         .then((response) => {
           this.scores = response.data;
           setTimeout(this.updateFollowers, 150);
