@@ -57,7 +57,6 @@ export default {
     },
     newSongData() {
       return {
-        // eslint-disable-next-line
         _id: null,
         scoresId: this.contest.scoresId,
         country: null,

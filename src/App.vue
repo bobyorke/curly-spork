@@ -10,8 +10,8 @@ html,body {
   padding: 0;
 }
 
-html,body,div {
+/*html,body,div {
   overflow: hidden;
-}
+}*/
 
 </style>

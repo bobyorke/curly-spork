@@ -1,7 +1,7 @@
 <template>
   <div class="song-form mt-2">
-    <b-form inline @submit="onSubmit"
-      @reset="onReset" @change="onChange"
+    <b-form inline @submit="submitEntry"
+      @reset="resetEntry" @change="onChange"
       autocomplete="off"
     >
       <b-form-select class="ml-2" placeholder="country" :state="countryOk"
@@ -22,14 +22,11 @@
       <b-input class="ml-2" placeholder="credits" v-model="form.credits"></b-input>
       <b-input class="ml-2" placeholder="chosen by" v-model="form.chosenBy"></b-input>
       <b-button v-if="songData._id !== null" class="ml-2"
-        variant="danger" type="reset"
-      >reset</b-button>
-      <b-button v-if="!cleared" class="ml-2"
-        variant="danger" @click="clearEntry"
-      >clear</b-button>
-      <b-button v-if="cleared && songData._id !== null" class="ml-2"
         variant="danger" @click="deleteEntry"
       >delete</b-button>
+      <b-button v-if="changed" class="ml-2"
+        variant="danger" type="reset"
+      >reset</b-button>
       <b-button v-if="changed && readyToSave" class="ml-2"
         variant="success" type="submit"
       >save</b-button>
@@ -57,9 +54,7 @@ export default {
     return {
       publicPath: process.env.BASE_URL,
       changed: false,
-      cleared: false,
       form: {
-        // eslint-disable-next-line
         _id: this.songData._id || null,
         scoresId: this.songData.scoresId,
         country: this.songData.country,
@@ -111,19 +106,23 @@ export default {
     },
     onChange() {
       this.changed = true;
-      this.cleared = false;
     },
-    onSubmit(evt) {
+    submitEntry(evt) {
       evt.preventDefault();
       this.$axios.post('/scoresApi/addSong', this.form)
-        .then(this.$parent.getSongs)
-        .then(() => { this.clearEntry(); })
+        .then(() => {
+          this.changed = false;
+          if (this.songData._id === null) { this.resetEntry(); }
+        })
         .catch((err) => {
-          this.$bvModal.msgBoxOk(err.response.data);
-        });
+          console.dir(err);
+          const errMsg = (err.response) ? err.response.data : err;
+          this.$bvModal.msgBoxOk(errMsg);
+        })
+        .finally(this.$parent.getSongs);
     },
-    onReset(evt) {
-      evt.preventDefault();
+    resetEntry(evt) {
+      if (evt) { evt.preventDefault(); }
       this.form.country = this.songData.country;
       this.form.year = this.songData.year;
       this.form.titleEnglish = this.songData.titleEnglish;
@@ -133,17 +132,24 @@ export default {
       this.form.chosenBy = this.songData.chosenBy;
       this.changed = false;
     },
-    clearEntry() {
-      this.form.country = null;
-      this.form.year = null;
-      this.form.titleEnglish = null;
-      this.form.titleLocal = null;
-      this.form.performingArtist = null;
-      this.form.credits = null;
-      this.form.chosenBy = null;
-      this.cleared = true;
-    },
     deleteEntry() {
+      this.$bvModal.msgBoxConfirm(
+        `Are you sure you want to delete ${this.form.country}/${this.form.year}?`,
+      )
+        .then(
+          (value) => {
+            if (value) {
+              this.$axios.get(`/scoresApi/deleteSong/${this.songData._id}`)
+                .catch((err) => {
+                  console.dir(err);
+                  const errMsg = (err.response) ? err.response.data : err;
+                  this.$bvModal.msgBoxOk(errMsg);
+                })
+                .finally(this.$parent.getSongs);
+            }
+          },
+          () => { /* continue */ },
+        );
     },
   },
 };
