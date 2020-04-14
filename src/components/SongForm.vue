@@ -4,7 +4,10 @@
       <b-form-select class="ml-2" placeholder="country" :state="countryOk"
         v-model="form.country" :options="countryOptions">
       </b-form-select>
-      <b-input class="ml-2 form-input-year" placeholder="year"
+      <span class="ml-1 flag-container">
+        <img v-if="form.country" :src="flagImgSrc" />
+      </span>
+      <b-input class="ml-1 form-input-year" placeholder="year"
         :state="yearOk" v-model="form.year"></b-input>
       <b-input class="ml-2" placeholder="name (English)" v-model="form.englishName"></b-input>
       <b-input class="ml-2" placeholder="name (local)" v-model="form.localName"></b-input>
@@ -45,6 +48,7 @@ export default {
   },
   data() {
     return {
+      publicPath: process.env.BASE_URL,
       changed: false,
       cleared: false,
       form: {
@@ -63,9 +67,9 @@ export default {
           value: null,
           text: 'country',
         },
-      ].concat(config.countries.map((c) => ({
-        value: c.name,
-        text: this.countryText(c),
+      ].concat(Object.entries(config.countries).map(([k, v]) => ({
+        value: k,
+        text: this.countryText(k, v),
       }))),
     };
   },
@@ -86,13 +90,16 @@ export default {
         && this.hasName
       );
     },
+    flagImgSrc() {
+      return `${this.publicPath}flags/${config.countries[this.form.country].flag}`;
+    },
   },
   methods: {
-    countryText(c) {
-      if (c.yearsActive) {
-        return `${c.name} (${c.yearsActive})`;
+    countryText(cName, cVal) {
+      if (cVal.yearsActive) {
+        return `${cName} (${cVal.yearsActive})`;
       }
-      return c.name;
+      return cName;
     },
     onChange() {
       this.changed = true;
@@ -131,5 +138,16 @@ export default {
 <style scoped>
 .form-input-year {
   width: 6em;
+}
+
+.flag-container {
+  width: 40px;
+  text-align: center;
+}
+
+.flag-container img {
+  max-width: 40px;
+  max-height: 24px;
+  border: 1px solid black;
 }
 </style>
