@@ -12,8 +12,12 @@
       </span>
       <b-input class="ml-1 form-input-year" placeholder="year"
         :state="yearOk" v-model="form.year"></b-input>
-      <b-input class="ml-2" placeholder="song title (English)" v-model="form.titleEnglish"></b-input>
-      <b-input class="ml-2" placeholder="song title (local)" v-model="form.titleLocal"></b-input>
+      <b-input class="ml-2" placeholder="song title (English)"
+        v-model="form.titleEnglish"
+      ></b-input>
+      <b-input class="ml-2" placeholder="song title (local)"
+        v-model="form.titleLocal"
+      ></b-input>
       <b-input class="ml-2" placeholder="artist(s)" v-model="form.performingArtist"></b-input>
       <b-input class="ml-2" placeholder="credits" v-model="form.credits"></b-input>
       <b-input class="ml-2" placeholder="chosen by" v-model="form.chosenBy"></b-input>
