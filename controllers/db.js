@@ -47,7 +47,7 @@ async function createContest(scoresId, adminUuid, scoresOptions = config.default
       creationDate: new Date(),
     })
       .catch((err) => {
-        console.log(`Error inserting into 'contests' collection: ${err.errmsg}`);
+        console.log(`Error inserting into 'contests' collection: ${err.stack}`);
         if (err.code == 11000) {
           throw Error(`${scoresId} already exists.`);
         } else {
@@ -61,7 +61,7 @@ async function getContest(adminUuid) {
   return (await db).collection('contests')
     .findOne({ adminUuid })
     .catch((err) => {
-      console.log(`Error in findOne from 'contests' collection: ${err.errmsg}`);
+      console.log(`Error in findOne from 'contests' collection: ${err.stack}`);
       throw err;
     });
 }
@@ -71,10 +71,31 @@ async function getSongs(scoresId) {
   return (await db).collection('songs')
     .find({ scoresId }).toArray()
     .catch((err) => {
-      console.log(`Error in findOne from 'songs' collection: ${err.errmsg}`);
+      console.log(`Error in findOne from 'songs' collection: ${err.stack}`);
       throw err;
     });
 }
+
+async function addSong(songData) {
+  const _id = songData._id;
+  delete(songData._id);
+  const coll = (await db).collection('songs');
+  let prm;
+  if (_id) {
+    prm = () => coll.replaceOne(
+      { _id: mongo.ObjectID(songData._id) },
+      songData,
+    );
+  } else {
+    prm = () => coll.insertOne(songData);
+  }
+  console.log(`prm: ${JSON.stringify(prm, null, 2)}`);
+  return prm()
+    .catch((err) => {
+      console.log(`Error adding to 'songs' collection: ${err.stack}`);
+      throw err;
+    });
+ }
 
 module.exports = {
   put,
@@ -82,4 +103,5 @@ module.exports = {
   createContest,
   getContest,
   getSongs,
+  addSong,
 };

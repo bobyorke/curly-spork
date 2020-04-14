@@ -51,6 +51,12 @@ router.get('/getSongs/:scoresId', (req, res) => {
     });
 });
 
+router.post('/addSong', (req, res) => {
+  db.addSong(req.body)
+    .then(() => { res.send('OK'); })
+    .catch((err) => { res.status(500).send(`Error adding song: ${err.stack}`); });
+});
+
 router.post('/put/:scoresId/:dataType', (req, res) => {
   db.put(req.params.scoresId, req.params.dataType, req.body)
     .then(() => { res.send('OK'); })
@@ -61,6 +67,10 @@ router.get('/get/:scoresId/:dataType', (req, res) => {
   db.get(req.params.scoresId, req.params.dataType)
     .then((data) => { res.json(data); })
     .catch((err) => { res.status(500).send(`Error reading from database: ${err}`); });
+});
+
+router.use((req, res) => {
+  res.status(404).type('txt').send('404 - Not found');
 });
 
 module.exports = router;
