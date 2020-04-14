@@ -56,5 +56,6 @@
     "ukraine": "./assets/flags/Ukraine.png",
     "unitedkingdom": "./assets/flags/United_Kingdom.png",
     "yugoslavia": "./assets/flags/Yugoslavia.png"
-  }
+  },
+  "defaultScoresOptions": [ 1, 6, 8, 10, 12 ]
 }

@@ -33,11 +33,19 @@ async function get(scoresId) {
     });
 }
 
-async function createContest(scoresId, adminUuid) {
+async function createContest(scoresId, adminUuid, scoresOptions = config.defaultScoresOptions) {
   if (!scoresId) { throw Error('scoresId missing'); }
   if (!adminUuid) { throw Error('adminUuid missing'); }
+  const scoresOpts = (typeof scoresOptions === 'string')
+    ? scoresOptions.split(/[\s,]+/)
+    : scoresOptions;
   return (await db).collection('contests')
-    .insertOne({ scoresId, adminUuid })
+    .insertOne({
+      scoresId,
+      adminUuid,
+      scoresOptions,
+      creationDate: new Date(),
+    })
       .catch((err) => {
         console.log(`Error inserting into 'contests' collection: ${err.errmsg}`);
         if (err.code == 11000) {
@@ -48,7 +56,7 @@ async function createContest(scoresId, adminUuid) {
       });
 }
 
-async function getScoresId(adminUuid) {
+async function getContest(adminUuid) {
   if (!adminUuid) { throw Error('adminUuid missing'); }
   return (await db).collection('contests')
     .findOne({ adminUuid })
@@ -62,5 +70,5 @@ module.exports = {
   put,
   get, 
   createContest,
-  getScoresId,
+  getContest,
 };

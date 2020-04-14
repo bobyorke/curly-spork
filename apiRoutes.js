@@ -16,7 +16,7 @@ router.get('/test', (req, res) => {
 
 router.post('/create', (req, res) => {
   console.log(`body: ${JSON.stringify(req.body, null, 2)}`);
-  db.createContest(req.body.sid, req.body.uuid)
+  db.createContest(req.body.sid, req.body.uuid, req.body.scoresOptions)
     .then(() => { 
       res.json({
         status: 'ok',
@@ -28,15 +28,15 @@ router.post('/create', (req, res) => {
     });
 });
 
-router.get('/getScoresId/:uuid', (req, res) => {
-  db.getScoresId(req.params.uuid)
-    .then((scoresId) => {
-      if (scoresId) { res.json({ scoresId: scoresId.scoresId }); }
-      else { res.status(404).send(`No scores ID found for ${req.params.uuid}`); }
+router.get('/getContest/:uuid', (req, res) => {
+  db.getContest(req.params.uuid)
+    .then((result) => {
+      if (result) { res.json(result); }
+      else { res.status(404).send(`No conteest found for ${req.params.uuid}`); }
     })
     .catch((err) => {
       console.log(`Error getting scores ID: ${err.stack}`);
-      res.status(500).send(`Error getting scores ID: ${err.message}`);
+      res.status(500).send(`Error getting contest: ${err.message}`);
     });
 });
 
