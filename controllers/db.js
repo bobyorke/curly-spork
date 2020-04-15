@@ -13,26 +13,6 @@ const db = mongoClient.connect(mongoUrl, config.mongoOptions)
     process.exit(1);
   });
 
-async function put(scoresId, dataType, objData) {
-  objData.scoresId = scoresId;
-  objData.dataType = dataType;
-  (await db).collection('scores')
-    .replaceOne({ scoresId, dataType }, objData, { upsert: true })
-    .catch((err) => {
-      console.log(`Error inserting object: ${err.stack}`);
-      throw(err);
-    });
-} 
-
-async function get(scoresId) {
-  return (await db).collection('scores')
-    .find({ scoresId })
-    .catch((err) => {
-      console.log(`Error getting data from DB: ${err.stack}`);
-      throw(err);
-    });
-}
-
 async function createContest(scoresId, adminUuid, scoresOptions = config.defaultScoresOptions) {
   if (!scoresId) { throw Error('scoresId missing'); }
   if (!adminUuid) { throw Error('adminUuid missing'); }
@@ -71,7 +51,7 @@ async function getSongs(scoresId) {
   return (await db).collection('songs')
     .find({ scoresId }).toArray()
     .catch((err) => {
-      console.log(`Error in findOne from 'songs' collection: ${err.stack}`);
+      console.log(`Error in find from 'songs' collection: ${err.stack}`);
       throw err;
     });
 }
@@ -109,12 +89,37 @@ async function deleteSong(songData) {
     });
 }
 
+async function getVoters(scoresId) {
+  if (!scoresId) { throw Error('scoresId missing'); }
+  return (await db).collection('voters')
+    .findOne({ scoresId })
+    .catch((err) => {
+      console.log(`Error in findOne from 'voters' collection: ${err.stack}`);
+      throw err;
+    });
+}
+
+async function setVoters(votersData) {
+  if (!votersData.scoresId) { throw Error ('scoresId missing'); }
+  if (!votersData.voters) { throw Error ('voters missing'); }
+  return (await db).collection('voters')
+    .replaceOne(
+      { scoresId: votersData.scoresId, },
+      votersData,
+      { upsert: true, },
+    )
+    .catch((err) => {
+      console.log(`Error in replaceOne in 'voters' collection: ${err.stack}`);
+      throw err;
+    });
+}
+
 module.exports = {
-  put,
-  get, 
   createContest,
   getContest,
   getSongs,
   addSong,
   deleteSong,
+  getVoters,
+  setVoters,
 };

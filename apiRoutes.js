@@ -54,28 +54,31 @@ router.get('/getSongs/:scoresId', (req, res) => {
 router.post('/addSong', (req, res) => {
   db.addSong(req.body)
     .then(() => { res.send('OK'); })
-    .catch((err) => { res.status(500).send(`Error adding song: ${err.stack}`); });
+    .catch((err) => { res.status(500).send(`Error adding song: ${err.message}`); });
 });
 
 router.post('/deleteSong', (req, res) => {
   db.deleteSong(req.body)
     .then(() => { res.send('OK'); })
-    .catch((err) => { res.status(500).send(`Error deleting song: ${err.stack}`); });
+    .catch((err) => { res.status(500).send(`Error deleting song: ${err.message}`); });
 });
 
 router.get('/getVoters/:scoresId', (req, res) => {
+  db.getVoters(req.params.scoresId)
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((err) => {
+      console.log(`Error getting voters: ${err.stack}`);
+      res.status(500).send(`Error getting voters: ${err.message}`);
+    })
 });
 
-router.post('/put/:scoresId/:dataType', (req, res) => {
-  db.put(req.params.scoresId, req.params.dataType, req.body)
+router.post('/setVoters', (req, res) => {
+  console.log(`voters: ${JSON.stringify(req.body, null, 2)}`);
+  db.setVoters(req.body)
     .then(() => { res.send('OK'); })
-    .catch((err) => { res.status(500).send(`Error writing to database: ${err}`); });
-});
-
-router.get('/get/:scoresId/:dataType', (req, res) => {
-  db.get(req.params.scoresId, req.params.dataType)
-    .then((data) => { res.json(data); })
-    .catch((err) => { res.status(500).send(`Error reading from database: ${err}`); });
+    .catch((err) => { res.status(500).send(`Error setting voters: ${err.message}`); });
 });
 
 router.use((req, res) => {
