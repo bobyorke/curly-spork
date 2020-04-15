@@ -18,6 +18,12 @@
       <h3>Songs</h3>
       <SongForm v-for="sd in songs" :key="sd.uuid" :songData="sd" />
       <SongForm :songData="newSongData()" />
+      <h3>Vote!!</h3>
+      <Voting
+        :songs="songs"
+        :voters="voters"
+        :scoresOptions="contest.scoresOptions"
+      />
     </div>
   </div>
 </template>
@@ -27,6 +33,7 @@ import moment from 'moment';
 
 import SongForm from '@/components/SongForm.vue';
 import Voters from '@/components/Voters.vue';
+import Voting from '@/components/Voting.vue';
 
 export default {
   data() {
@@ -39,6 +46,7 @@ export default {
   components: {
     SongForm,
     Voters,
+    Voting,
   },
   computed: {
     createdDateNice() {

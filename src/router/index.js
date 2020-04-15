@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Scores from '../views/Scores.vue';
-import NotFound from '../views/NotFound.vue';
+import Scores from '@/views/Scores.vue';
+import NotFound from '@/views/NotFound.vue';
 
 Vue.use(VueRouter);
 
@@ -17,12 +17,12 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (create.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "create" */ '../views/Create.vue'),
+    component: () => import(/* webpackChunkName: "create" */ '@/views/Create.vue'),
   },
   {
     path: '/admin/:uuid',
     name: 'Admin',
-    component: () => import(/* webpackChunkName: "admin" */ '../views/Admin.vue'),
+    component: () => import(/* webpackChunkName: "admin" */ '@/views/Admin.vue'),
   },
   {
     path: '*',
