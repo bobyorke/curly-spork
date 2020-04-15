@@ -33,7 +33,7 @@ export default {
         .filter((x) => x.length > 0);
     },
     taRows() {
-      return Math.min(8, this.votersAsArray.length + 2);
+      return Math.min(8, this.votersAsArray.length + 1);
     },
   },
   methods: {
@@ -52,7 +52,6 @@ export default {
   },
   watch: {
     votersWeeded(val) {
-      console.log(`Voters: ${val.join('; ')}`);
       this.$axios.post('/scoresApi/setVoters', {
         scoresId: this.scoresId,
         voters: val,
@@ -62,6 +61,7 @@ export default {
             `Error updating voters: ${err.response.data}`,
           );
         });
+      this.$parent.voters = val;        
     },
   },
 };

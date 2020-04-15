@@ -33,6 +33,7 @@ export default {
     return {
       contest: undefined,
       songs: [],
+      voters: [],
     };
   },
   components: {
