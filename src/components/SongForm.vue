@@ -138,7 +138,11 @@ export default {
         .then(
           (value) => {
             if (value) {
-              this.$axios.get(`/scoresApi/deleteSong/${this.songData._id}`)
+              this.$axios.post('/scoresApi/deleteSong', {
+                scoresId: this.form.scoresId,
+                country: this.form.country,
+                year: this.form.year,
+              })
                 .catch((err) => {
                   console.dir(err);
                   const errMsg = (err.response) ? err.response.data : err;

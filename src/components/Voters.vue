@@ -61,7 +61,7 @@ export default {
             `Error updating voters: ${err.response.data}`,
           );
         });
-      this.$parent.voters = val;        
+      this.$parent.voters = val;
     },
   },
 };
