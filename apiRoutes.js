@@ -57,8 +57,8 @@ router.post('/addSong', (req, res) => {
     .catch((err) => { res.status(500).send(`Error adding song: ${err.stack}`); });
 });
 
-router.get('/deleteSong/:id', (req, res) => {
-  db.deleteSong(req.params.id)
+router.post('/deleteSong', (req, res) => {
+  db.deleteSong(req.body)
     .then(() => { res.send('OK'); })
     .catch((err) => { res.status(500).send(`Error deleting song: ${err.stack}`); });
 });

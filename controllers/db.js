@@ -77,28 +77,32 @@ async function getSongs(scoresId) {
 }
 
 async function addSong(songData) {
-  const _id = songData._id;
+  if (!songData.scoresId) { throw Error('scoresId missing'); }
+  if (!songData.country) { throw Error('country missing'); }
+  if (!songData.year) { throw Error('year missing'); }
   delete(songData._id);
-  const coll = (await db).collection('songs');
-  let prm;
-  if (_id) {
-    prm = () => coll.replaceOne(
-      { _id: mongo.ObjectID(_id) },
+  return (await db).collection('songs')
+    .replaceOne(
+      {
+        scoresId: songData.scoresId,
+        country: songData.country,
+        year: songData.year,
+      },
       songData,
-    );
-  } else {
-    prm = () => coll.insertOne(songData);
-  }
-  return prm()
+      { upsert: true },
+    )
     .catch((err) => {
       console.log(`Error adding to 'songs' collection: ${err.stack}`);
       throw err;
     });
 }
 
-async function deleteSong(id) {
+async function deleteSong(songData) {
+  if (!songData.scoresId) { throw Error('scoresId missing'); }
+  if (!songData.country) { throw Error('country missing'); }
+  if (!songData.year) { throw Error('year missing'); }
   return (await db).collection('songs')
-    .deleteOne({ _id: mongo.ObjectID(id) })
+    .deleteOne(songData)
     .catch((err) => {
       console.log(`Error deleting from 'songs' collection: ${err.stack}`);
       throw err;

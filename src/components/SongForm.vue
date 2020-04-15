@@ -56,7 +56,6 @@ export default {
       publicPath: process.env.BASE_URL,
       changed: false,
       form: {
-        _id: this.songData._id || null,
         scoresId: this.songData.scoresId,
         country: this.songData.country,
         year: this.songData.year,
@@ -112,11 +111,7 @@ export default {
     submitEntry(evt) {
       evt.preventDefault();
       this.$axios.post('/scoresApi/addSong', this.form)
-        .then(() => {
-          this.changed = false;
-          // if (this.songData._id === null) { this.resetEntry(); }
-          this.resetEntry();
-        })
+        .then(() => { this.resetEntry(); })
         .catch((err) => {
           console.dir(err);
           const errMsg = (err.response) ? err.response.data : err;
