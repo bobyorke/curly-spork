@@ -3,7 +3,7 @@ import Vue from 'vue';
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 
-import BootstrapVue from 'bootstrap-vue';
+import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue';
 
 import axios from 'axios';
 
@@ -12,6 +12,7 @@ import router from './router';
 
 Vue.prototype.$axios = axios;
 Vue.use(BootstrapVue);
+Vue.use(BootstrapVueIcons);
 
 Vue.config.productionTip = false;
 

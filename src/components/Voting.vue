@@ -1,6 +1,6 @@
 <template>
   <div class="voting">
-    <div class="container">
+    <div class="container-fluid">
       <VoteEntry
         v-for="voter in voters"
         :key="voter"
@@ -34,7 +34,8 @@ export default {
   },
   methods: {
     setActive(value) {
-      console.log(`setActive: ${value.toString}`);
+      console.log(`setActive: ${value}`);
+      this.active = value;
     },
   },
 };
