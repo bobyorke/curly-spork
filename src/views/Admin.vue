@@ -13,8 +13,9 @@
         Points: {{ contest.scoresOptions }}.<br />
         Created: {{ createdDateNice }}.
       </p>
+      <h3>Voters</h3>
       <h3>Songs</h3>
-      <SongForm v-for="sd in songs" :key="Math.random()" :songData="sd" />
+      <SongForm v-for="sd in songs" :key="sd.uuid" :songData="sd" />
       <SongForm :songData="newSongData()" />
     </div>
   </div>

@@ -44,6 +44,7 @@
 </template>
 
 <script>
+import { v4 as uuidv4 } from 'uuid';
 import config from '../../config.json';
 
 export default {
@@ -64,6 +65,7 @@ export default {
         performingArtist: this.songData.performingArtist,
         credits: this.songData.credits,
         chosenBy: this.songData.chosenBy,
+        uuid: uuidv4(),
       },
       countryOptions: [
         {

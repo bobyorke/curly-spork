@@ -14,6 +14,5 @@ module.exports = {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-underscore-dangle': 'off', // mongo uses _id
-    'vue/valid-v-for': 'off',
   },
 };
