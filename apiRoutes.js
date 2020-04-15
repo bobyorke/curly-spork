@@ -63,6 +63,9 @@ router.post('/deleteSong', (req, res) => {
     .catch((err) => { res.status(500).send(`Error deleting song: ${err.stack}`); });
 });
 
+router.get('/getVoters/:scoresId', (req, res) => {
+});
+
 router.post('/put/:scoresId/:dataType', (req, res) => {
   db.put(req.params.scoresId, req.params.dataType, req.body)
     .then(() => { res.send('OK'); })
