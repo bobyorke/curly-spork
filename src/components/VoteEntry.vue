@@ -13,7 +13,7 @@
         {{ voter }}
       </div>
       <div class="col-10 border border-primary">
-        <div class="container-fluid">
+        <div class="container-fluid" v-if="active || !$parent.active">
           <div class="row">
             <div class="col" v-for="sc in scoresOptions" :key="sc">
               <b-form-select :options="songOptionsPoints(sc)" v-model="form[sc]">
