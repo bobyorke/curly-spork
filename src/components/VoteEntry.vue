@@ -1,5 +1,5 @@
 <template>
-  <div class="row mb-4" :class="{ 'bg-success': active }">
+  <div class="row py-2" :class="{ 'bg-success': active }">
     <div class="col-2">
       <b-button variant="danger"
         v-if="!active"
@@ -63,8 +63,6 @@ export default {
   },
   methods: {
     onChange(evt, score) {
-      console.log(`${score} changed!`);
-      console.dir(evt);
       this.alreadySelected = Object.values(this.scores)
         .filter((x) => x !== null);
     },
