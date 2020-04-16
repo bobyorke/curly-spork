@@ -148,6 +148,17 @@ async function submitScores(scoresData) {
     });
 };
 
+async function getScores(scoresId, voterId) {
+  if (!scoresId) { throw Error('scoresId missing'); }
+  if (!voterId) { throw Error('voterId missing'); }
+  return (await db).collection('scores')
+    .findOne({ scoresId, voterId })
+    .catch((err) => {
+      console.log(`Error in findOne from 'scores' collection: ${err.stack}`);
+      throw err;
+    });
+}
+
 module.exports = {
   createContest,
   getContest,
@@ -158,4 +169,5 @@ module.exports = {
   setVoters,
   setActiveVoter,
   submitScores,
+  getScores,
 };

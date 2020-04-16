@@ -71,10 +71,10 @@ router.get('/getVoters/:scoresId', (req, res) => {
     .catch((err) => {
       console.log(`Error getting voters: ${err.stack}`);
       res.status(500).send(`Error getting voters: ${err.message}`);
-    })
+    });
 });
 
-router.post('/setVoters', (req, res) => {
+router.post('/_setVoters', (req, res) => {
   db.setVoters(req.body)
     .then(() => { res.send('OK'); })
     .catch((err) => { res.status(500).send(`Error setting voters: ${err.message}`); });
@@ -90,6 +90,19 @@ router.post('/submitScores', (req, res) => {
   db.submitScores(req.body)
     .then(() => { res.send('OK'); })
     .catch((err) => { res.status(500).send(`Error submitting scores: ${err.message}`); });
+});
+
+router.get('/getScores/:scoresId/:voterId', (req, res) => {
+  console.log('params:-');
+  console.dir(req.params);
+  db.getScores(req.params.scoresId, req.params.voterId)
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((err) => {
+      console.log(`Error getting scores: ${err.stack}`);
+      res.status(500).send(`Error getting scores: ${err.message}`);
+    });
 });
 
 router.use((req, res) => {
