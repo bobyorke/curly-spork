@@ -13,15 +13,15 @@
         Points: {{ contest.scoresOptions }}.<br />
         Created: {{ createdDateNice }}.
       </p>
-      <h3>Vote!!</h3>
+      <h3 class="mt-3">Vote!!</h3>
       <Voting
         :songs="songs"
         :voters="voters"
         :scoresOptions="contest.scoresOptions"
       />
-      <h3>Voters</h3>
+      <h3 class="mt-3">Voters</h3>
       <Voters :scoresId="contest.scoresId" />
-      <h3>Songs</h3>
+      <h3 class="mt-3">Songs</h3>
       <SongForm v-for="sd in songs" :key="sd.uuid" :songData="sd" />
       <SongForm :songData="newSongData()" />
     </div>

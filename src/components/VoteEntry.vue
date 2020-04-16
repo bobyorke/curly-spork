@@ -1,5 +1,5 @@
 <template>
-  <div class="row border border-dark" :class="{ 'bg-success': active }">
+  <div class="row mb-4" :class="{ 'bg-success': active }">
     <div class="col-2">
       <b-button variant="danger"
         v-if="!active"
@@ -11,7 +11,7 @@
       ><b-icon-circle-fill/></b-button>
       {{ voter }}
     </div>
-    <div class="col-10 border border-primary">
+    <div class="col-10">
       <div class="container-fluid" v-if="active || !$parent.active">
         <div class="row">
           <div class="col" v-for="sc in scoresOptions" :key="sc">
@@ -44,9 +44,9 @@ export default {
     };
   },
   mounted() {
-    this.scoresOptions.forEach((s) => {
-      this.scores[s] = null;
-    });
+    this.scores = Object.fromEntries(
+      this.scoresOptions.map((sc) => [sc, null]),
+    );
   },
   computed: {
     songOptions() {
