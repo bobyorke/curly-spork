@@ -30,7 +30,6 @@
 </template>
 
 <script>
-import { v4 as uuid } from 'uuid';
 import config from '../../config.json';
 
 export default {
@@ -40,7 +39,7 @@ export default {
       form: {
         sid: this.getRandomSid(),
         scoresOptions: config.defaultScoresOptions.join(', '),
-        uuid: uuid(),
+        uuid: this.$uuid(),
       },
     };
   },

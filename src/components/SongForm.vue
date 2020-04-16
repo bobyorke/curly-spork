@@ -44,7 +44,6 @@
 </template>
 
 <script>
-import { v4 as uuidv4 } from 'uuid';
 import config from '../../config.json';
 
 export default {
@@ -110,7 +109,7 @@ export default {
     },
     submitEntry(evt) {
       evt.preventDefault();
-      this.form.uuid = uuidv4();
+      this.form.uuid = this.$uuid();
       this.$axios.post('/scoresApi/addSong', this.form)
         .then(() => { this.resetEntry(); })
         .catch((err) => {
