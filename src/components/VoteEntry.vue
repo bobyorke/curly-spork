@@ -1,5 +1,7 @@
 <template>
-  <div class="row py-2" :class="{ 'bg-success': active }">
+  <div class="row py-2"
+    :class="{ 'border': active, 'border-success': active }"
+  >
     <div class="col-2">
       <b-button variant="danger"
         v-if="!active"
