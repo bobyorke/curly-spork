@@ -75,10 +75,15 @@ router.get('/getVoters/:scoresId', (req, res) => {
 });
 
 router.post('/setVoters', (req, res) => {
-  console.log(`voters: ${JSON.stringify(req.body, null, 2)}`);
   db.setVoters(req.body)
     .then(() => { res.send('OK'); })
     .catch((err) => { res.status(500).send(`Error setting voters: ${err.message}`); });
+});
+
+router.post('/setActiveVoter', (req, res) => {
+  db.setActiveVoter(req.body)
+    .then(() => { res.send('OK'); })
+    .catch((err) => { res.status(500).send(`Error setting active voter: ${err.message}`); });
 });
 
 router.use((req, res) => {

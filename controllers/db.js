@@ -92,24 +92,41 @@ async function deleteSong(songData) {
 async function getVoters(scoresId) {
   if (!scoresId) { throw Error('scoresId missing'); }
   return (await db).collection('voters')
-    .findOne({ scoresId })
+    .find({ scoresId }).toArray()
     .catch((err) => {
-      console.log(`Error in findOne from 'voters' collection: ${err.stack}`);
+      console.log(`Error in find from 'voters' collection: ${err.stack}`);
       throw err;
     });
 }
 
 async function setVoters(votersData) {
-  if (!votersData.scoresId) { throw Error ('scoresId missing'); }
-  if (!votersData.voters) { throw Error ('voters missing'); }
-  return (await db).collection('voters')
+  if (!Array.isArray(votersData)) {
+    throw Error('votersData must be an array');
+  }
+  const scoresId = votersData[0].scoresId;
+  if (votersData.some((v) => v.scoresId !== scoresId)) {
+    throw Error(`Add voters need the same scoresId: ${scoresId}`);
+  }
+  const coll = (await db).collection('voters');
+  try {
+    await coll.deleteMany({ scoresId });
+    await coll.insert(votersData);
+  } catch (err) {
+    console.log(`Error in deleteMany/insert in 'voters' collection: ${err.stack}`);
+    throw err;
+  }
+}
+
+async function setActiveVoter(activeVoterData) {
+  if (!activeVoterData.scoresId) { throw Error('scoresId missing'); }
+  return (await db).collection('activeVoter')
     .replaceOne(
-      { scoresId: votersData.scoresId, },
-      votersData,
-      { upsert: true, },
+      { scoresId: activeVoterData.scoresId },
+      activeVoterData,
+      { upsert: true },
     )
     .catch((err) => {
-      console.log(`Error in replaceOne in 'voters' collection: ${err.stack}`);
+      console.log(`Error in replaceOne in 'activeVoter' collection: ${err.stack}`);
       throw err;
     });
 }
@@ -122,4 +139,5 @@ module.exports = {
   deleteSong,
   getVoters,
   setVoters,
+  setActiveVoter,
 };

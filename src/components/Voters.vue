@@ -40,7 +40,8 @@ export default {
     updateFromDb() {
       this.$axios.get(`/scoresApi/getVoters/${this.scoresId}`)
         .then((response) => {
-          this.votersText = response.data.voters.join('\n');
+          this.votersText = response.data
+            .map((v) => v.name).join('\n');
         })
         .catch(() => {
           this.placeholderText = `${defaultText}\nError reading from database.`;
@@ -52,16 +53,24 @@ export default {
   },
   watch: {
     votersWeeded(val) {
-      this.$axios.post('/scoresApi/setVoters', {
+      const voterData = val.map((v) => ({
+        _id: this.$uuid(),
         scoresId: this.scoresId,
-        voters: val,
-      })
+        name: v,
+      }));
+      this.$axios.post(
+        '/scoresApi/setVoters',
+        voterData,
+      )
         .catch((err) => {
           this.$bvModal.msgBoxOk(
             `Error updating voters: ${err.response.data}`,
           );
         });
-      this.$parent.voters = val;
+      this.$parent.voters = voterData.map((vd) => ({
+        _id: vd._id,
+        name: vd.name,
+      }));
     },
   },
 };

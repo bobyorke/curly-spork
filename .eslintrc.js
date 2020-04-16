@@ -13,7 +13,7 @@ module.exports = {
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-    //'no-underscore-dangle': 'off', // mongo uses _id
+    'no-underscore-dangle': 'off', // mongo uses _id
     'import/no-unresolved': 'off', // buggy
   },
 };

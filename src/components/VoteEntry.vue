@@ -9,7 +9,7 @@
         v-else
         @click="$parent.setActive(null)"
       ><b-icon-circle-fill/></b-button>
-      {{ voter }}
+      {{ voter.name }}
     </div>
     <div class="col-10">
       <div class="container-fluid" v-if="active || !$parent.active">
@@ -33,7 +33,7 @@ export default {
   name: 'VoteEntry',
   props: {
     active: Boolean,
-    voter: String,
+    voter: Object,
     songs: Array,
     scoresOptions: Array,
   },

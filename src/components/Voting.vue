@@ -21,7 +21,7 @@
       </div>
       <VoteEntry
         v-for="voter in voters"
-        :key="voter"
+        :key="voter._id"
         :voter="voter"
         :songs="songs"
         :active="active === voter"
@@ -41,6 +41,7 @@ export default {
     VoteEntry,
   },
   props: {
+    scoresId: String,
     songs: Array,
     voters: Array,
     scoresOptions: Array,
@@ -50,13 +51,25 @@ export default {
       active: null,
     };
   },
+  computed: {
+    voterNames() {
+      return Object.values(this.voters);
+    },
+  },
   methods: {
     pointsSuffix(label) {
       return `${label} point${/^1$/.test(label) ? '' : 's'}`;
     },
     setActive(value) {
-      console.log(`setActive: ${value}`);
       this.active = value;
+      this.$axios.post('/scoresApi/setActiveVoter', {
+        scoresId: this.scoresId,
+        activeVoterId: value ? value._id : null,
+        activeVoterName: value ? value.name : null,
+      })
+        .catch((err) => {
+          this.$bvModal.msgBoxOk(`Error setting active voter: ${err}`);
+        });
     },
   },
 };

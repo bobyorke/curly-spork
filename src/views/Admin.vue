@@ -15,6 +15,7 @@
       </p>
       <h3 class="mt-3">Vote!!</h3>
       <Voting
+        :scoresId="contest.scoresId"
         :songs="songs"
         :voters="voters"
         :scoresOptions="contest.scoresOptions"
