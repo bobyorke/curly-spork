@@ -86,6 +86,12 @@ router.post('/setActiveVoter', (req, res) => {
     .catch((err) => { res.status(500).send(`Error setting active voter: ${err.message}`); });
 });
 
+router.post('/submitScores', (req, res) => {
+  db.submitScores(req.body)
+    .then(() => { res.send('OK'); })
+    .catch((err) => { res.status(500).send(`Error submitting scores: ${err.message}`); });
+});
+
 router.use((req, res) => {
   res.status(404).type('txt').send('404 - Not found');
 });

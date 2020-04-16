@@ -131,6 +131,23 @@ async function setActiveVoter(activeVoterData) {
     });
 }
 
+async function submitScores(scoresData) {
+  if (!scoresData.scoresId) { throw Error('scoresId missing'); }
+  return (await db).collection('scores')
+    .replaceOne(
+      {
+        scoresId: scoresData.scoresId,
+        voterId: scoresData.voterId,
+      },
+      scoresData,
+      { upsert: true },
+    )
+    .catch((err) => {
+      console.log(`Error in replaceOne in 'scores' collection: ${err.stack}`);
+      throw err;
+    });
+};
+
 module.exports = {
   createContest,
   getContest,
@@ -140,4 +157,5 @@ module.exports = {
   getVoters,
   setVoters,
   setActiveVoter,
+  submitScores,
 };
