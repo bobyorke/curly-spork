@@ -42,6 +42,10 @@ export default {
         .then((response) => {
           this.votersText = response.data
             .map((v) => v.name).join('\n');
+          this.$parent.voters = response.data.map((vd) => ({
+            _id: vd._id,
+            name: vd.name,
+          }));
         })
         .catch(() => {
           this.placeholderText = `${defaultText}\nError reading from database.`;
@@ -52,6 +56,7 @@ export default {
     this.updateFromDb();
   },
   watch: {
+    /*
     votersWeeded(val) {
       const voterData = val.map((v) => ({
         _id: this.$uuid(),
@@ -67,11 +72,8 @@ export default {
             `Error updating voters: ${err.response.data}`,
           );
         });
-      this.$parent.voters = voterData.map((vd) => ({
-        _id: vd._id,
-        name: vd.name,
-      }));
     },
+    */
   },
 };
 </script>

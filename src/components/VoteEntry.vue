@@ -50,6 +50,18 @@ export default {
     this.scores = Object.fromEntries(
       this.scoresOptions.map((sc) => [sc, null]),
     );
+    this.$axios.get(
+      `/scoresApi/getScores/${this.scoresId}/${this.voter._id}`,
+    )
+      .then((response) => {
+        response.data.scores.forEach((sc) => {
+          const song = this.songs.find((s) => s._id === sc.songId);
+          if (song) {
+            this.scores[`${sc.score}`] = song;
+          }
+        });
+      })
+      .catch(() => { /* continue */ });
   },
   computed: {
     songOptions() {
