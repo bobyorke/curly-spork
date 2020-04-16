@@ -15,7 +15,6 @@ router.get('/test', (req, res) => {
 });
 
 router.post('/create', (req, res) => {
-  console.log(`body: ${JSON.stringify(req.body, null, 2)}`);
   db.createContest(req.body.sid, req.body.uuid, req.body.scoresOptions)
     .then(() => { 
       res.json({
@@ -93,8 +92,6 @@ router.post('/submitScores', (req, res) => {
 });
 
 router.get('/getScores/:scoresId/:voterId', (req, res) => {
-  console.log('params:-');
-  console.dir(req.params);
   db.getScores(req.params.scoresId, req.params.voterId)
     .then((result) => {
       res.json(result);
