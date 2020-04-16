@@ -1,28 +1,30 @@
 <template>
   <div class="row border border-dark" :class="{ 'bg-success': active }">
-    <b-form inline>
-      <div class="col-2">
-        <b-button variant="danger"
-          v-if="!active"
-          @click="$parent.setActive(voter)"
-        ><b-icon-circle/></b-button>
-        <b-button variant="success"
-          v-else
-          @click="$parent.setActive(null)"
-        ><b-icon-circle-fill/></b-button>
-        {{ voter }}
-      </div>
-      <div class="col-10 border border-primary">
-        <div class="container-fluid" v-if="active || !$parent.active">
-          <div class="row">
-            <div class="col" v-for="sc in scoresOptions" :key="sc">
-              <b-form-select :options="songOptionsPoints(sc)" v-model="form[sc]">
-              </b-form-select>
-            </div>
+    <div class="col-2">
+      <b-button variant="danger"
+        v-if="!active"
+        @click="$parent.setActive(voter)"
+      ><b-icon-circle/></b-button>
+      <b-button variant="success"
+        v-else
+        @click="$parent.setActive(null)"
+      ><b-icon-circle-fill/></b-button>
+      {{ voter }}
+    </div>
+    <div class="col-10 border border-primary">
+      <div class="container-fluid" v-if="active || !$parent.active">
+        <div class="row">
+          <div class="col" v-for="sc in scoresOptions" :key="sc">
+            <b-select
+              :options="songOptions"
+              v-model="scores[sc]"
+              @change="(e) => onChange(e, sc)"
+            >
+            </b-select>
           </div>
         </div>
       </div>
-    </b-form>
+    </div>
   </div>
 </template>
 
@@ -37,27 +39,34 @@ export default {
   },
   data() {
     return {
-      form: {},
+      scores: {},
+      alreadySelected: [],
     };
   },
   mounted() {
     this.scoresOptions.forEach((s) => {
-      this.form[s] = null;
+      this.scores[s] = null;
     });
   },
   computed: {
     songOptions() {
-      return this.songs.map((s) => ({
-        value: s,
-        text: `${s.country}/${s.year}`,
-      }));
+      return [
+        { value: null, text: 'select...', disabled: true },
+      ].concat(this.songs
+        .map((s) => ({
+          value: s,
+          text: `${s.country}/${s.year}`,
+          disabled: this.alreadySelected.includes(s),
+        }))
+        .sort((a, b) => a.text.localeCompare(b.text)));
     },
   },
   methods: {
-    songOptionsPoints(label) {
-      return [
-        { value: null, text: label },
-      ].concat(this.songOptions);
+    onChange(evt, score) {
+      console.log(`${score} changed!`);
+      console.dir(evt);
+      this.alreadySelected = Object.values(this.scores)
+        .filter((x) => x !== null);
     },
   },
 };

@@ -1,6 +1,24 @@
 <template>
   <div class="voting">
     <div class="container-fluid">
+      <div class="row">
+        <div class="col-2"></div>
+        <div class="col-10">
+          <div class="container-fluid">
+            <div class="row">
+              <div
+                v-for="sc in scoresOptions"
+                :key="sc"
+                class="col"
+              >
+                <h5 class="text-center">
+                  {{ pointsSuffix(sc) }}
+                </h5>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <VoteEntry
         v-for="voter in voters"
         :key="voter"
@@ -33,6 +51,9 @@ export default {
     };
   },
   methods: {
+    pointsSuffix(label) {
+      return `${label} point${/^1$/.test(label) ? '' : 's'}`;
+    },
     setActive(value) {
       console.log(`setActive: ${value}`);
       this.active = value;

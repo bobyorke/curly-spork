@@ -65,7 +65,6 @@ export default {
         performingArtist: this.songData.performingArtist,
         credits: this.songData.credits,
         chosenBy: this.songData.chosenBy,
-        uuid: uuidv4(),
       },
       countryOptions: [
         {
@@ -111,6 +110,7 @@ export default {
     },
     submitEntry(evt) {
       evt.preventDefault();
+      this.form.uuid = uuidv4();
       this.$axios.post('/scoresApi/addSong', this.form)
         .then(() => { this.resetEntry(); })
         .catch((err) => {
