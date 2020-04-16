@@ -62,7 +62,8 @@ export default {
     },
   },
   methods: {
-    onChange(evt, score) {
+    // onChange(evt, score) {
+    onChange() {
       this.alreadySelected = Object.values(this.scores)
         .filter((x) => x !== null);
     },
