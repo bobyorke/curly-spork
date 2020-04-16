@@ -22,6 +22,7 @@
       <VoteEntry
         v-for="voter in voters"
         :key="voter._id"
+        :scoresId="scoresId"
         :voter="voter"
         :songs="songs"
         :active="active === voter"

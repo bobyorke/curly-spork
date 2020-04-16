@@ -33,6 +33,7 @@ export default {
   name: 'VoteEntry',
   props: {
     active: Boolean,
+    scoresId: String,
     voter: Object,
     songs: Array,
     scoresOptions: Array,
@@ -51,7 +52,7 @@ export default {
   computed: {
     songOptions() {
       return [
-        { value: null, text: 'select...', disabled: true },
+        { value: null, text: 'select...', disabled: false },
       ].concat(this.songs
         .map((s) => ({
           value: s,
@@ -66,6 +67,23 @@ export default {
     onChange() {
       this.alreadySelected = Object.values(this.scores)
         .filter((x) => x !== null);
+      const scoresData = {
+        scoresId: this.scoresId,
+        voterId: this.voter._id,
+        scores: [],
+      };
+      Object.entries(this.scores).forEach(([k, v]) => {
+        if (v !== null && /^\d+$/.test(k)) {
+          scoresData.scores.push({
+            songId: v._id,
+            score: parseInt(k, 10),
+          });
+        }
+      });
+      this.$axios.post('/scoresApi/submitScores', scoresData)
+        .catch((err) => {
+          this.$bvModal.msgBoxOk(`Error submitting score: ${err}`);
+        });
     },
   },
 };
