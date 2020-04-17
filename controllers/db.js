@@ -154,6 +154,16 @@ async function setActiveVoter(activeVoterData) {
     });
 }
 
+async function getActiveVoter(scoresId) {
+  if (!scoresId) { throw Error('scoresId missing'); }
+  return (await db).collection('activeVoter')
+    .findOne({ scoresId })
+    .catch((err) => {
+      console.log(`Error in findOne from 'activeVoter' collection: ${err.stack}`);
+      throw err;
+    });
+};
+
 async function submitScores(scoresData) {
   if (!scoresData.scoresId) { throw Error('scoresId missing'); }
   return (await db).collection('scores')
@@ -192,6 +202,7 @@ module.exports = {
   addVoter,
   deleteVoter,
   setActiveVoter,
+  getActiveVoter,
   submitScores,
   getScores,
 };

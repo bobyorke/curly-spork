@@ -85,6 +85,12 @@ router.post('/deleteVoter', (req, res) => {
     .catch((err) => { res.status(500).send(`Error deleting voter: ${err.message}`); });
 });
 
+router.get('/getActiveVoter/:scoresId', (req, res) => {
+  db.getActiveVoter(req.params.scoresId)
+    .then((result) => { res.json(result); })
+    .catch((err) => { res.status(500).send(`Error getting active voter: ${err.message}`); });
+});
+
 router.post('/setActiveVoter', (req, res) => {
   db.setActiveVoter(req.body)
     .then(() => { res.send('OK'); })

@@ -5,7 +5,7 @@
       autocomplete="off"
     >
       <b-input class="ml-1" placeholder="name"
-        :state="form.name" v-model="form.name"></b-input>
+        :state="nameOk" v-model="form.name"></b-input>
       <b-button class="ml-2" variant="danger" type="reset">reset</b-button>
       <b-button v-if="voterData._id !== null" class="ml-2"
         variant="danger" @click="deleteEntry"
@@ -29,6 +29,11 @@ export default {
         name: this.voterData.name,
       },
     };
+  },
+  computed: {
+    nameOk() {
+      return (this.form.name || '').length > 0;
+    },
   },
   methods: {
     submitEntry(evt) {

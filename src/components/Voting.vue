@@ -25,9 +25,9 @@
         :scoresId="scoresId"
         :voter="voter"
         :songs="songs"
-        :active="active === voter"
+        :active="activeVoterId === voter._id"
         :scoresOptions="scoresOptions"
-        @setActive="setActive"
+        @setActive="setActiveVoter"
       />
     </div>
   </div>
@@ -49,7 +49,7 @@ export default {
   },
   data() {
     return {
-      active: null,
+      activeVoterId: null,
     };
   },
   computed: {
@@ -61,8 +61,15 @@ export default {
     pointsSuffix(label) {
       return `${label} point${/^1$/.test(label) ? '' : 's'}`;
     },
-    setActive(value) {
-      this.active = value;
+    getActiveVoter() {
+      this.$axios.get(`/scoresApi/getActiveVoter/${this.scoresId}`)
+        .then((response) => { this.activeVoterId = response.data.activeVoterId; })
+        .catch((err) => {
+          console.log(`Erro getting active voter: ${err}`);
+        });
+    },
+    setActiveVoter(value) {
+      this.activeVoterId = value ? value._id : null;
       this.$axios.post('/scoresApi/setActiveVoter', {
         scoresId: this.scoresId,
         activeVoterId: value ? value._id : null,
@@ -72,6 +79,9 @@ export default {
           this.$bvModal.msgBoxOk(`Error setting active voter: ${err}`);
         });
     },
+  },
+  mounted() {
+    this.getActiveVoter();
   },
 };
 </script>

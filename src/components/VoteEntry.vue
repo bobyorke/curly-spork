@@ -5,16 +5,16 @@
     <div class="col-2">
       <b-button variant="danger"
         v-if="!active"
-        @click="$parent.setActive(voter)"
+        @click="$emit('setActive', voter)"
       ><b-icon-circle/></b-button>
       <b-button variant="success"
         v-else
-        @click="$parent.setActive(null)"
+        @click="$emit('setActive', null)"
       ><b-icon-circle-fill/></b-button>
       {{ voter.name }}
     </div>
     <div class="col-10">
-      <div class="container-fluid" v-if="active || !$parent.active">
+      <div class="container-fluid" v-if="active || !$parent.activeVoterId">
         <div class="row">
           <div class="col" v-for="sc in scoresOptions" :key="sc">
             <b-select
@@ -47,6 +47,12 @@ export default {
     };
   },
   mounted() {
+    console.log(
+      `${this.voter.name}: ${this.voter._id};
+      active: ${this.$parent.activeVoterId}
+      ${this.active}
+      `,
+    );
     this.scores = Object.fromEntries(
       this.scoresOptions.map((sc) => [sc, null]),
     );
