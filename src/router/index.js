@@ -25,6 +25,11 @@ const routes = [
     component: () => import(/* webpackChunkName: "admin" */ '@/views/Admin.vue'),
   },
   {
+    path: '/scoreboard/:scoresId',
+    name: 'Scoreboard',
+    component: () => import(/* webpackChunkName: "scoreboard" */ '@/views/Scoreboard.vue'),
+  },
+  {
     path: '*',
     name: 'not found',
     component: NotFound,

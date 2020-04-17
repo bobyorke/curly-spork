@@ -9,7 +9,10 @@
     <div v-else>
       <h2>Coronavision admin</h2>
       <p>
-        Scores ID: {{ contest.scoresId }}.<br />
+        Scores ID: <a
+          :href="`/scoreboard/${contest.scoresId}`"
+          target="_blank"
+        >{{ contest.scoresId }}</a>.<br />
         Points: {{ contest.scoresOptions }}.<br />
         Created: {{ createdDateNice }}.
       </p>
