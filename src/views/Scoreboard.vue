@@ -1,24 +1,23 @@
 <template>
   <div id="scoreboard" class="overflow-hidden">
     <div id="leaders">
-      <h1>Test app</h1>
       <div
         class="scores leader"
-        v-for="[name, score] in orderedScores"
-        :key="name"
-        :ref="`score_${name}`"
+        v-for="sc in orderedScores"
+        :key="sc._id"
+        :ref="`score_${sc._id}`"
       >
-        {{ name }}: {{ score }}
+        {{ sc.song.country }}, {{ sc.song.year }}: {{ sc.total }}
       </div>
     </div>
     <div>
       <div
         class="scores bg-danger follower"
-        v-for="[name, score] in arrayScores"
-        :key="name"
+        v-for="sc in scores"
+        :key="sc._id"
         ref="score_follow"
       >
-        {{ name }}: {{ score }}
+        {{ sc.song.country }}, {{ sc.song.year }}: {{ sc.total }}
       </div>
     </div>
   </div>
@@ -31,22 +30,21 @@ export default {
   name: 'Scores',
   data() {
     return {
-      scores: {},
+      scores: [],
     };
   },
   computed: {
-    arrayScores() {
-      return Object.entries(this.scores);
-    },
     orderedScores() {
-      return this.arrayScores.concat()
-        .sort((a, b) => b[1] - a[1]);
+      return this.scores.concat()
+        .sort((a, b) => b.total - a.total);
     },
   },
   methods: {
     updateScores() {
-      this.$axios.get('/scoresApi/test')
+      this.$axios.get(`/scoresApi/getScoresTotal/${this.$route.params.scoresId}`)
         .then((response) => {
+          console.log('scores:-');
+          console.dir(response.data);
           this.scores = response.data;
           setTimeout(this.updateFollowers, 150);
         })
@@ -59,8 +57,8 @@ export default {
         });
     },
     updateFollowers() {
-      for (let i = 0; i < this.arrayScores.length; i += 1) {
-        const scoreName = Object.keys(this.scores)[i];
+      for (let i = 0; i < this.scores.length; i += 1) {
+        const scoreName = this.scores[i]._id;
         const ldr = $(this.$refs[`score_${scoreName}`][0]);
         const pos = ldr.position();
         const flw = $(this.$refs.score_follow[i]);
@@ -109,7 +107,6 @@ div#scoreboard {
   background: red;
 }
 .follower {
-  display: none;
   background-image: linear-gradient(to right, #032d61, #0163dd);
   position: absolute;
   top: 200px;
