@@ -66,20 +66,13 @@ async function getSongs(scoresId) {
 }
 
 async function addSong(songData) {
-  if (!songData.scoresId) { throw Error('scoresId missing'); }
-  if (!songData.country) { throw Error('country missing'); }
-  if (!songData.year) { throw Error('year missing'); }
+  const _id = mongoObjId(songData._id);
   delete(songData._id);
-  return (await db).collection('songs')
-    .replaceOne(
-      {
-        scoresId: songData.scoresId,
-        country: songData.country,
-        year: songData.year,
-      },
-      songData,
-      { upsert: true },
-    )
+  const coll = (await db).collection('songs')
+  const prm = (_id)
+    ? (newData) => coll.replaceOne({ _id }, newData)
+    : (newData) => coll.insertOne(newData);
+  return prm(songData)
     .catch((err) => {
       console.log(`Error adding to 'songs' collection: ${err.stack}`);
       throw err;
@@ -87,11 +80,10 @@ async function addSong(songData) {
 }
 
 async function deleteSong(songData) {
-  if (!songData.scoresId) { throw Error('scoresId missing'); }
-  if (!songData.country) { throw Error('country missing'); }
-  if (!songData.year) { throw Error('year missing'); }
+  if (!songData._id) { throw Error('_id missing'); }
+  const _id = mongoObjId(songData._id);
   return (await db).collection('songs')
-    .deleteOne(songData)
+    .deleteOne({ _id })
     .catch((err) => {
       console.log(`Error deleting from 'songs' collection: ${err.stack}`);
       throw err;
@@ -116,7 +108,7 @@ async function addVoter(voterData) {
   const prm = (voterData._id) 
     ? (newData) => coll.replaceOne({ _id: voterData._id }, newData)
     : (newData) => coll.insertOne(newData);
-  prm(voterData)
+  return prm(voterData)
     .catch((err) => {
       console.log(`Error adding to 'voters' collection: ${err.stack}`);
       throw err;
@@ -190,13 +182,66 @@ async function submitScores(scoresData) {
     });
 };
 
-async function getScores(scoresId, voterId) {
+async function getScores(scoresId, voterId = null) {
   if (!scoresId) { throw Error('scoresId missing'); }
-  if (!voterId) { throw Error('voterId missing'); }
-  return (await db).collection('scores')
-    .findOne({ scoresId, voterId })
+  const findQuery = { scoresId };
+  if (voterId) {
+    findQuery.voterId = mongoObjId(voterId);
+  }
+  const coll = (await db).collection('scores')
+  const prm = (voterId)
+    ? () => coll.findOne(findQuery)
+    : () => coll.find(findQuery).toArray();
+  return prm()
     .catch((err) => {
       console.log(`Error in findOne from 'scores' collection: ${err.stack}`);
+      throw err;
+    });
+}
+
+async function getScoresTotal(scoresId) {
+  if (!scoresId) { throw Error('scoresId missing'); }
+  return (await db).collection('scores')
+    .aggregate([
+      {
+        $match: {
+          scoresId,
+        },
+      },
+      { $unwind: '$scores' },
+      {
+        $group: {
+          _id: '$scores.songId',
+          total: { $sum: '$scores.score' },
+        },
+      },
+      {
+        $lookup: {
+          from: 'songs',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'song',
+        },
+      },
+      { $unwind: '$song' },
+      { $sort: { 'song.country': 1, 'song.year': -1 } },
+      {
+        $project: {
+          _id: 1,
+          total: 1,
+          'song.country': 1,
+          'song.year': 1,
+          'song.titleEnglish': 1,
+          'song.titleLocal': 1,
+          'song.performingArtist': 1,
+          'song.credits': 1,
+          'song.chosenBy': 1,
+        },
+      },
+    ])
+    .toArray()
+    .catch((err) => {
+      console.log(`Error in 'scores' aggregate: ${err.stack}`);
       throw err;
     });
 }
@@ -214,4 +259,5 @@ module.exports = {
   getActiveVoter,
   submitScores,
   getScores,
+  getScoresTotal,
 };

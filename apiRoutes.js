@@ -114,6 +114,17 @@ router.get('/getScores/:scoresId/:voterId', (req, res) => {
     });
 });
 
+router.get('/getScoresTotal/:scoresId', (req, res) => {
+  db.getScoresTotal(req.params.scoresId)
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((err) => {
+      console.log(`Error getting scores: ${err.stack}`);
+      res.status(500).send(`Error getting scores: ${err.message}`);
+    });
+});
+
 router.use((req, res) => {
   res.status(404).type('txt').send('404 - Not found');
 });

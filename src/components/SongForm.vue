@@ -56,6 +56,7 @@ export default {
       publicPath: process.env.BASE_URL,
       changed: false,
       form: {
+        _id: this.songData._id,
         scoresId: this.songData.scoresId,
         country: this.songData.country,
         year: this.songData.year,
@@ -138,9 +139,7 @@ export default {
           (value) => {
             if (value) {
               this.$axios.post('/scoresApi/deleteSong', {
-                scoresId: this.form.scoresId,
-                country: this.form.country,
-                year: this.form.year,
+                _id: this.form._id,
               })
                 .catch((err) => {
                   console.dir(err);

@@ -82,8 +82,8 @@ html, body {
   width: 100%;
   height: 100%;
   margin: 0;
-  /*background: #aaee88;*/
-  background: #021636;
+  background: #aaee88;
+  /*background: #021636;*/
 }
 
 div#scoreboard {

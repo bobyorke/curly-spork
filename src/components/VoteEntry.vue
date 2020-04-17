@@ -47,12 +47,6 @@ export default {
     };
   },
   mounted() {
-    console.log(
-      `${this.voter.name}: ${this.voter._id};
-      active: ${this.$parent.activeVoterId}
-      ${this.active}
-      `,
-    );
     this.scores = Object.fromEntries(
       this.scoresOptions.map((sc) => [sc, null]),
     );

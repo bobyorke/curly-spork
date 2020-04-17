@@ -84,6 +84,7 @@ export default {
     },
     newSongData() {
       return {
+        _id: null,
         scoresId: this.contest.scoresId,
         country: null,
         year: null,

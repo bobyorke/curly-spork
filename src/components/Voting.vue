@@ -63,9 +63,15 @@ export default {
     },
     getActiveVoter() {
       this.$axios.get(`/scoresApi/getActiveVoter/${this.scoresId}`)
-        .then((response) => { this.activeVoterId = response.data.activeVoterId; })
+        .then((response) => {
+          if (this.activeVoterId) {
+            this.activeVoterId = response.data.activeVoterId;
+          } else {
+            this.activeVoterId = null;
+          }
+        })
         .catch((err) => {
-          console.log(`Erro getting active voter: ${err}`);
+          console.log(`Error getting active voter: ${err}`);
         });
     },
     setActiveVoter(value) {
