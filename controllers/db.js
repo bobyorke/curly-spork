@@ -111,9 +111,10 @@ async function getVoters(scoresId) {
 async function addVoter(voterData) {
   if (!voterData.scoresId) { throw Error('scoresId missing'); }
   if (!voterData.name) { throw Error('name missing'); }
+  voterData._id = mongoObjId(voterData._id);
   const coll = (await db).collection('voters');
   const prm = (voterData._id) 
-    ? (newData) => coll.replaceOne({ _id: mongoObjId(voterData._id) }, newData)
+    ? (newData) => coll.replaceOne({ _id: voterData._id }, newData)
     : (newData) => coll.insertOne(newData);
   prm(voterData)
     .catch((err) => {
@@ -142,6 +143,8 @@ async function deleteVoter(voterData) {
 
 async function setActiveVoter(activeVoterData) {
   if (!activeVoterData.scoresId) { throw Error('scoresId missing'); }
+  if (!activeVoterData.activeVoterId) { throw Error('activeVoterId missing'); }
+  activeVoterData.activeVoterId = mongoObjId(activeVoterData.activeVoterId);
   return (await db).collection('activeVoter')
     .replaceOne(
       { scoresId: activeVoterData.scoresId },
@@ -166,6 +169,12 @@ async function getActiveVoter(scoresId) {
 
 async function submitScores(scoresData) {
   if (!scoresData.scoresId) { throw Error('scoresId missing'); }
+  if (!scoresData.voterId) { throw Error('voterId missing'); }
+  if (!scoresData.scores) { throw Error('scores missing'); }
+  scoresData.voterId = mongoObjId(scoresData.voterId);
+  scoresData.scores.forEach((s) => {
+    s.songId = mongoObjId(s.songId);
+  });
   return (await db).collection('scores')
     .replaceOne(
       {
