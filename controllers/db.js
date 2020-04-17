@@ -201,41 +201,63 @@ async function getScores(scoresId, voterId = null) {
 
 async function getScoresTotal(scoresId) {
   if (!scoresId) { throw Error('scoresId missing'); }
-  return (await db).collection('scores')
+  return (await db).collection('songs')
     .aggregate([
       {
         $match: {
           scoresId,
         },
       },
-      { $unwind: '$scores' },
-      {
-        $group: {
-          _id: '$scores.songId',
-          total: { $sum: '$scores.score' },
-        },
-      },
       {
         $lookup: {
-          from: 'songs',
-          localField: '_id',
-          foreignField: '_id',
-          as: 'song',
+          from: 'scores',
+          let: { 
+            songId: '$_id',
+          },
+          pipeline: [
+            { $unwind: '$scores' },
+            {
+              $group: {
+                _id: '$scores.songId',
+                total: { $sum: '$scores.score' },
+              },
+            },
+            {
+              $match: {
+                $expr: {
+                  $eq: [ '$_id', '$$songId' ],
+                },
+              },
+            },
+          ],
+          as: 'scores',
         },
       },
-      { $unwind: '$song' },
-      { $sort: { 'song.country': 1, 'song.year': -1 } },
+      {
+        $unwind: {
+          path: '$scores',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $set: {
+          total: {
+            $ifNull: [ '$scores.total', 0 ]
+          },
+        },
+      },
+      { $sort: { country: 1, year: -1 } },
       {
         $project: {
           _id: 1,
+          country: 1,
+          year: 1,
+          titleEnglish: 1,
+          titleLocal: 1,
+          performingArtist: 1,
+          credits: 1,
+          chosenBy: 1,
           total: 1,
-          'song.country': 1,
-          'song.year': 1,
-          'song.titleEnglish': 1,
-          'song.titleLocal': 1,
-          'song.performingArtist': 1,
-          'song.credits': 1,
-          'song.chosenBy': 1,
         },
       },
     ])
