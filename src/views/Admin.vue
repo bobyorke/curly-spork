@@ -21,7 +21,8 @@
         :scoresOptions="contest.scoresOptions"
       />
       <h3 class="mt-3">Voters</h3>
-      <Voters :scoresId="contest.scoresId" />
+      <VoterForm v-for="vt in voters" :key="vt.uuid" :voterData="vt" />
+      <VoterForm :voterData="newVoterData()" />
       <h3 class="mt-3">Songs</h3>
       <SongForm v-for="sd in songs" :key="sd.uuid" :songData="sd" />
       <SongForm :songData="newSongData()" />
@@ -33,7 +34,7 @@
 import moment from 'moment';
 
 import SongForm from '@/components/SongForm.vue';
-import Voters from '@/components/Voters.vue';
+import VoterForm from '@/components/VoterForm.vue';
 import Voting from '@/components/Voting.vue';
 
 export default {
@@ -46,7 +47,7 @@ export default {
   },
   components: {
     SongForm,
-    Voters,
+    VoterForm,
     Voting,
   },
   computed: {
@@ -63,10 +64,19 @@ export default {
           console.log(`Error getting songs array: ${err}`);
         });
     },
+    getVoters() {
+      this.$axios.get(`/scoresApi/getVoters/${this.contest.scoresId}`)
+        .then((response) => { this.voters = response.data; })
+        .catch((err) => {
+          // eslint-disable-next-line
+          console.log(`Error getting voters array: ${err}`);
+        });
+    },
     lookupScoresId() {
       this.$axios.get(`/scoresApi/getContest/${this.$route.params.uuid}`)
         .then((response) => { this.contest = response.data; })
         .then(this.getSongs)
+        .then(this.getVoters)
         .catch(() => { this.contest = null; });
     },
     newSongData() {
@@ -79,6 +89,13 @@ export default {
         performingArtist: null,
         credits: null,
         chosenBy: null,
+      };
+    },
+    newVoterData() {
+      return {
+        _id: null,
+        scoresId: this.contest.scoresId,
+        name: null,
       };
     },
   },

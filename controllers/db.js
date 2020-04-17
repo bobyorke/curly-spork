@@ -13,6 +13,15 @@ const db = mongoClient.connect(mongoUrl, config.mongoOptions)
     process.exit(1);
   });
 
+function mongoObjId(id) {
+  if (id) {
+    try {
+      return mongo.ObjectID(id);
+    } catch { /* wasn't valid mongo object ID */ }
+  }
+  return id;
+};
+
 async function createContest(scoresId, adminUuid, scoresOptions = config.defaultScoresOptions) {
   if (!scoresId) { throw Error('scoresId missing'); }
   if (!adminUuid) { throw Error('adminUuid missing'); }
@@ -99,20 +108,34 @@ async function getVoters(scoresId) {
     });
 }
 
-async function setVoters(votersData) {
-  if (!Array.isArray(votersData)) {
-    throw Error('votersData must be an array');
-  }
-  const scoresId = votersData[0].scoresId;
-  if (votersData.some((v) => v.scoresId !== scoresId)) {
-    throw Error(`Add voters need the same scoresId: ${scoresId}`);
-  }
+async function addVoter(voterData) {
+  if (!voterData.scoresId) { throw Error('scoresId missing'); }
+  if (!voterData.name) { throw Error('name missing'); }
   const coll = (await db).collection('voters');
+  const prm = (voterData._id) 
+    ? (newData) => coll.replaceOne({ _id: mongoObjId(voterData._id) }, newData)
+    : (newData) => coll.insertOne(newData);
+  prm(voterData)
+    .catch((err) => {
+      console.log(`Error adding to 'voters' collection: ${err.stack}`);
+      throw err;
+    });
+}
+
+async function deleteVoter(voterData) {
+  if (!voterData._id) { throw Error('_id missing'); }
+  if (!voterData.scoresId) { throw Error('scoresId missing'); }
+  const voters = (await db).collection('voters');
+  const scores = (await db).collection('scores');
+  const _id = mongoObjId(voterData._id);
   try {
-    await coll.deleteMany({ scoresId });
-    await coll.insert(votersData);
-  } catch (err) {
-    console.log(`Error in deleteMany/insert in 'voters' collection: ${err.stack}`);
+    await voters.deleteOne({ _id });
+    await scores.deleteOne({
+      scoresId: voterData.scoresId,
+      voterId: _id,
+    });
+  } catch(err) {
+    console.log(`Error deleting from 'voters' collection: ${err.stack}`);
     throw err;
   }
 }
@@ -166,7 +189,8 @@ module.exports = {
   addSong,
   deleteSong,
   getVoters,
-  setVoters,
+  addVoter,
+  deleteVoter,
   setActiveVoter,
   submitScores,
   getScores,

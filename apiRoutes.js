@@ -73,10 +73,16 @@ router.get('/getVoters/:scoresId', (req, res) => {
     });
 });
 
-router.post('/_setVoters', (req, res) => {
-  db.setVoters(req.body)
+router.post('/addVoter', (req, res) => {
+  db.addVoter(req.body)
     .then(() => { res.send('OK'); })
-    .catch((err) => { res.status(500).send(`Error setting voters: ${err.message}`); });
+    .catch((err) => { res.status(500).send(`Error adding voter: ${err.message}`); });
+});
+
+router.post('/deleteVoter', (req, res) => {
+  db.deleteVoter(req.body)
+    .then(() => { res.send('OK'); })
+    .catch((err) => { res.status(500).send(`Error deleting voter: ${err.message}`); });
 });
 
 router.post('/setActiveVoter', (req, res) => {
