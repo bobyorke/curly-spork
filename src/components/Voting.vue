@@ -64,7 +64,7 @@ export default {
     getActiveVoter() {
       this.$axios.get(`/scoresApi/getActiveVoter/${this.scoresId}`)
         .then((response) => {
-          if (this.activeVoterId) {
+          if (response.data.activeVoterId) {
             this.activeVoterId = response.data.activeVoterId;
           } else {
             this.activeVoterId = null;

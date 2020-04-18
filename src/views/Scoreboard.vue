@@ -162,8 +162,8 @@ div#scoreboard {
 div#active-vote {
   position: absolute;
   top: 40%;
-  left: 65%;
-  width: 29%;
+  left: 70%;
+  width: 22%;
   height: 50%;
   color: #ffffff;
 }
