@@ -9,6 +9,9 @@
       </div>
     </div>
     <div class="rest-container">
+      <span class="flag-container">
+        <img :src="flagImgSrc" />
+      </span>
       {{ score.country }}, {{ score.year }}
       <div class="total">
         {{ score.totalScore }}
@@ -18,10 +21,22 @@
 </template>
 
 <script>
+import config from '@/../config.json';
+
 export default {
   name: 'ScoreElement',
   props: {
     score: Object,
+  },
+  data() {
+    return {
+      publicPath: process.env.BASE_URL,
+    };
+  },
+  computed: {
+    flagImgSrc() {
+      return `${this.publicPath}flags/${config.countries[this.score.country].flag}`;
+    },
   },
 };
 </script>
@@ -57,12 +72,25 @@ export default {
 
 .rest-container {
   background-image: linear-gradient(to right, #032d61, #0163dd);
+  padding: 0.4vw 1vw 0 1vw;
   height: 100%;
   width: 86%;
   float: left;
+  font-size: 2.6vh;
 }
 
 .total {
   float: right;
+}
+
+.flag-container {
+  width: 3vw;
+  text-align: center;
+  margin-right: 0.3vw;
+}
+
+.flag-container img {
+  max-width: 3vw;
+  max-height: 1.8vw;
 }
 </style>
