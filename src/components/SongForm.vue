@@ -140,6 +140,7 @@ export default {
             if (value) {
               this.$axios.post('/scoresApi/deleteSong', {
                 _id: this.form._id,
+                scoresId: this.form.scoresId,
               })
                 .catch((err) => {
                   console.dir(err);

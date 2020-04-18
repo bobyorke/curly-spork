@@ -6,6 +6,13 @@ const config = require('../config.json');
 const mongoUrl = 'mongodb://localhost:27017';
 const dbName = 'coronavision';
 
+const scoresCache = {};
+
+function clearScoresCache(scoresId) {
+  console.log(`Deleting ${scoresId} from cache`);
+  delete scoresCache[scoresId];
+}
+
 const db = mongoClient.connect(mongoUrl, config.mongoOptions)
   .then((cli) => cli.db(dbName))
   .catch((err) => {
@@ -66,6 +73,7 @@ async function getSongs(scoresId) {
 }
 
 async function addSong(songData) {
+  if (!songData.scoresId) { throw Error('scoresId missing'); }
   const _id = mongoObjId(songData._id);
   delete(songData._id);
   const coll = (await db).collection('songs')
@@ -73,6 +81,7 @@ async function addSong(songData) {
     ? (newData) => coll.replaceOne({ _id }, newData)
     : (newData) => coll.insertOne(newData);
   return prm(songData)
+    .then(() => { clearScoresCache(songData.scoresId); })
     .catch((err) => {
       console.log(`Error adding to 'songs' collection: ${err.stack}`);
       throw err;
@@ -81,9 +90,11 @@ async function addSong(songData) {
 
 async function deleteSong(songData) {
   if (!songData._id) { throw Error('_id missing'); }
+  if (!songData.scoresId) { throw Error('scoresId missing'); }
   const _id = mongoObjId(songData._id);
   return (await db).collection('songs')
     .deleteOne({ _id })
+    .then(() => { clearScoresCache(songData.scoresId); })
     .catch((err) => {
       console.log(`Error deleting from 'songs' collection: ${err.stack}`);
       throw err;
@@ -142,6 +153,7 @@ async function setActiveVoter(activeVoterData) {
       activeVoterData,
       { upsert: true },
     )
+    .then(() => { clearScoresCache(activeVoterData.scoresId); })
     .catch((err) => {
       console.log(`Error in replaceOne in 'activeVoter' collection: ${err.stack}`);
       throw err;
@@ -175,6 +187,7 @@ async function submitScores(scoresData) {
       scoresData,
       { upsert: true },
     )
+    .then(() => { clearScoresCache(scoresData.scoresId); })
     .catch((err) => {
       console.log(`Error in replaceOne in 'scores' collection: ${err.stack}`);
       throw err;
@@ -200,6 +213,10 @@ async function getScores(scoresId, voterId = null) {
 
 async function getScoresTotal(scoresId) {
   if (!scoresId) { throw Error('scoresId missing'); }
+  if (scoresCache[scoresId]) {
+    console.log(`Serving cached scores [${scoresId}]`);
+    return scoresCache[scoresId];
+  }
   const scoresPipeline = [
     { $unwind: '$scores' },
     { 
@@ -270,7 +287,8 @@ async function getScoresTotal(scoresId) {
         activeScore: { $ifNull: [ '$scores.activeScore', 0 ] },
       },
     },
-    { $sort: { country: 1, year: -1 } },
+    // { $sort: { country: 1, year: -1 } },
+    { $sort: { _id: 1 } },
     {
       $project: {
         _id: 1,
@@ -286,13 +304,16 @@ async function getScoresTotal(scoresId) {
       },
     },
   ];
-  return (await db).collection('songs')
+  const rslt = (await db).collection('songs')
     .aggregate(queryPipeline)
     .toArray()
     .catch((err) => {
       console.log(`Error in aggregate: ${err.stack}`);
       throw err;
     });
+  console.log(`Storing scores result in cache [${scoresId}]`);
+  scoresCache[scoresId] = rslt;
+  return rslt;
 }
 
 module.exports = {

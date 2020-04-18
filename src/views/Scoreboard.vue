@@ -60,14 +60,22 @@ export default {
     },
     orderedScores() {
       return this.scores.concat()
-        .sort((a, b) => b.totalScore - a.totalScore);
+        .sort((a, b) => this.scoresSort('totalScore', a, b));
     },
     activeScores() {
       return this.scores.filter((x) => x.activeScore > 0)
-        .sort((a, b) => b.activeScore - a.activeScore);
+        .sort((a, b) => this.scoresSort('activeScore', a, b));
     },
   },
   methods: {
+    scoresSort(key, a, b) {
+      let cmp = b[key] - a[key];
+      if (cmp !== 0) return cmp;
+      cmp = a.country.localeCompare(b.country);
+      if (cmp !== 0) return cmp;
+      cmp = b.year.toString().localeCompare(a.year.toString());
+      return cmp;
+    },
     scoresRef(row, col) {
       const ind = (scoresPerCol * col) + (row - 1);
       console.log(`ind: ${ind}`);
@@ -91,7 +99,7 @@ export default {
           console.log(`Error getting scores: ${err}`);
         })
         .finally(() => {
-          setTimeout(this.updateScores, 5000);
+          setTimeout(this.updateScores, 800);
         });
     },
     updateFollowers() {
