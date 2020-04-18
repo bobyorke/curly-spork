@@ -1,25 +1,32 @@
 <template>
-  <div id="scoreboard" class="overflow-hidden">
-    <div id="leaders">
-      <div class="leader-row">
-        <div v-for="c in scoreColumns" :key="c" class="leader-col">
-          <div
-            class="scores leader"
-            v-for="sc in orderedScoresColumn(c)"
-            :key="sc._id"
-            :ref="`score_${sc._id}`"
-          >
-            {{ sc.country }}, {{ sc.year }}: {{ sc.totalScore }}
+  <div>
+    <div id="scoreboard" class="overflow-hidden">
+      <div id="leaders">
+        <div class="leader-row">
+          <div v-for="c in scoreColumns" :key="c" class="leader-col">
+            <div
+              class="scores leader"
+              v-for="sc in orderedScoresColumn(c)"
+              :key="sc._id"
+              :ref="`score_${sc._id}`"
+            >
+              {{ sc.country }}, {{ sc.year }}: {{ sc.totalScore }}
+            </div>
           </div>
         </div>
       </div>
+      <div>
+        <ScoreElement
+          v-for="sc in scores"
+          :key="sc._id"
+          :score="sc"
+          ref="score_follow"
+        />
+      </div>
     </div>
-    <div>
-      <ScoreElement
-        v-for="sc in scores"
-        :key="sc._id"
-        :score="sc"
-        ref="score_follow"
+    <div id="active-vote" v-if="activeScores.length > 0">
+      <ActiveVoter
+        :scores="activeScores"
       />
     </div>
   </div>
@@ -28,6 +35,7 @@
 <script>
 import $ from 'jquery';
 import ScoreElement from '@/components/ScoreElement.vue';
+import ActiveVoter from '@/components/ActiveVoter.vue';
 
 const scoresPerCol = 11;
 
@@ -35,6 +43,7 @@ export default {
   name: 'Scores',
   components: {
     ScoreElement,
+    ActiveVoter,
   },
   data() {
     return {
@@ -52,6 +61,10 @@ export default {
     orderedScores() {
       return this.scores.concat()
         .sort((a, b) => b.totalScore - a.totalScore);
+    },
+    activeScores() {
+      return this.scores.filter((x) => x.activeScore > 0)
+        .sort((a, b) => b.activeScore - a.activeScore);
     },
   },
   methods: {
@@ -106,12 +119,13 @@ html, body {
   height: 100%;
   margin: 0;
   background: #021636;
+  /*background-image: url('~@/assets/CV_BG_01.jpg');*/
 }
 
 div#scoreboard {
   position: absolute;
   top: 10%;
-  left: 7%;
+  left: 4%;
   width: 60%;
   height: 80%;
   color: #ffffff;
@@ -144,5 +158,15 @@ div#scoreboard {
   display: table;
   clear: both;
 }
+
+div#active-vote {
+  position: absolute;
+  top: 40%;
+  left: 70%;
+  width: 22%;
+  height: 50%;
+  color: #ffffff;
+}
+
 
 </style>

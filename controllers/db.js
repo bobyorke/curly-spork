@@ -135,7 +135,6 @@ async function deleteVoter(voterData) {
 
 async function setActiveVoter(activeVoterData) {
   if (!activeVoterData.scoresId) { throw Error('scoresId missing'); }
-  if (!activeVoterData.activeVoterId) { throw Error('activeVoterId missing'); }
   activeVoterData.activeVoterId = mongoObjId(activeVoterData.activeVoterId);
   return (await db).collection('activeVoter')
     .replaceOne(
