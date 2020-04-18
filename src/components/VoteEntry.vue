@@ -16,7 +16,7 @@
     <div class="col-10">
       <div class="container-fluid" v-if="active || !$parent.activeVoterId">
         <div class="row">
-          <div class="col" v-for="sc in scoresOptions" :key="sc">
+          <div class="col-12 col-lg-2" v-for="sc in scoresOptions" :key="sc">
             <b-select
               :options="songOptions"
               v-model="scores[sc]"

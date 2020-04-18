@@ -9,7 +9,7 @@
               <div
                 v-for="sc in scoresOptions"
                 :key="sc"
-                class="col"
+                class="col-12 col-lg-2"
               >
                 <h5 class="text-center">
                   {{ pointsSuffix(sc) }}
