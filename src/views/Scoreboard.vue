@@ -128,6 +128,8 @@ html, body {
   margin: 0;
   background: #021636;
   background-image: url('~@/assets/CV_BG_02.jpg');
+  background-repeat: no-repeat;
+  background-position: right top;
 }
 
 div#scoreboard {
