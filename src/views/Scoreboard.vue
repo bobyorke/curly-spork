@@ -15,25 +15,27 @@
       </div>
     </div>
     <div>
-      <div
-        class="scores bg-danger follower"
+      <ScoreElement
         v-for="sc in scores"
         :key="sc._id"
+        :score="sc"
         ref="score_follow"
-      >
-        {{ sc.country }}, {{ sc.year }}: {{ sc.totalScore }}
-      </div>
+      />
     </div>
   </div>
 </template>
 
 <script>
 import $ from 'jquery';
+import ScoreElement from '@/components/ScoreElement.vue';
 
 const scoresPerCol = 11;
 
 export default {
   name: 'Scores',
+  components: {
+    ScoreElement,
+  },
   data() {
     return {
       scores: [],
@@ -58,8 +60,6 @@ export default {
     updateScores() {
       this.$axios.get(`/scoresApi/getScoresTotal/${this.$route.params.scoresId}`)
         .then((response) => {
-          console.log('scores:-');
-          console.dir(response.data);
           this.scores = response.data;
           setTimeout(this.updateFollowers, 150);
         })
@@ -76,7 +76,7 @@ export default {
         const scoreName = this.scores[i]._id;
         const ldr = $(this.$refs[`score_${scoreName}`][0]);
         const pos = ldr.position();
-        const flw = $(this.$refs.score_follow[i]);
+        const flw = $(this.$refs.score_follow[i].$refs.score_follow);
         flw.css('top', pos.top);
         flw.css('left', pos.left);
         flw.css('height', ldr.innerHeight());
@@ -135,14 +135,6 @@ div#scoreboard {
   content: "";
   display: table;
   clear: both;
-}
-
-.follower {
-  background-image: linear-gradient(to right, #032d61, #0163dd);
-  position: absolute;
-  top: 200px;
-  left: -300px;
-  transition: top 1s, left 1s;
 }
 
 </style>
