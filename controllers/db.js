@@ -201,69 +201,97 @@ async function getScores(scoresId, voterId = null) {
 
 async function getScoresTotal(scoresId) {
   if (!scoresId) { throw Error('scoresId missing'); }
-  return (await db).collection('songs')
-    .aggregate([
-      {
-        $match: {
-          scoresId,
-        },
+  const scoresPipeline = [
+    { $unwind: '$scores' },
+    { 
+      $lookup: {
+        from: 'activeVoter',
+        localField: 'voterId',
+        foreignField: 'activeVoterId',
+        as: 'activeVoter', 
+      }
+    },
+    {
+      $unwind: {
+        path: '$activeVoter',
+        preserveNullAndEmptyArrays: true,
       },
-      {
-        $lookup: {
-          from: 'scores',
-          let: { 
-            songId: '$_id',
-          },
-          pipeline: [
-            { $unwind: '$scores' },
-            {
-              $group: {
-                _id: '$scores.songId',
-                total: { $sum: '$scores.score' },
-              },
-            },
-            {
-              $match: {
-                $expr: {
-                  $eq: [ '$_id', '$$songId' ],
-                },
-              },
-            },
+    },
+    {
+      $set: {
+        'scores.activeScore': {
+          $cond: [
+            '$activeVoter._id',
+            '$scores.score',
+            0,
           ],
-          as: 'scores',
+        },
+      }
+    },
+    {
+      $group: {
+        _id: '$scores.songId',
+        totalScore: { $sum: '$scores.score' },
+        activeScore: { $sum: '$scores.activeScore' },
+      },
+    },
+    {
+      $match: {
+        $expr: {
+          $eq: [ '$_id', '$$songId' ],
         },
       },
-      {
-        $unwind: {
-          path: '$scores',
-          preserveNullAndEmptyArrays: true,
-        },
+    },
+  ];
+  const queryPipeline = [
+    {
+      $match: {
+        scoresId,
       },
-      {
-        $set: {
-          total: {
-            $ifNull: [ '$scores.total', 0 ]
-          },
+    },
+    {
+      $lookup: {
+        from: 'scores',
+        let: { 
+          songId: '$_id',
         },
+        pipeline: scoresPipeline,
+        as: 'scores',
       },
-      { $sort: { country: 1, year: -1 } },
-      {
-        $project: {
-          _id: 1,
-          country: 1,
-          year: 1,
-          titleEnglish: 1,
-          titleLocal: 1,
-          performingArtist: 1,
-          credits: 1,
-          chosenBy: 1,
-          total: 1,
-        },
+    },
+    {
+      $unwind: {
+        path: '$scores',
+        preserveNullAndEmptyArrays: true,
       },
-    ])
+    },
+    {
+      $set: {
+        totalScore: { $ifNull: [ '$scores.totalScore', 0 ] },
+        activeScore: { $ifNull: [ '$scores.activeScore', 0 ] },
+      },
+    },
+    { $sort: { country: 1, year: -1 } },
+    {
+      $project: {
+        _id: 1,
+        country: 1,
+        year: 1,
+        titleEnglish: 1,
+        titleLocal: 1,
+        performingArtist: 1,
+        credits: 1,
+        chosenBy: 1,
+        totalScore: 1,
+        activeScore: 1,
+      },
+    },
+  ];
+  return (await db).collection('songs')
+    .aggregate(queryPipeline)
     .toArray()
     .catch((err) => {
-      console.log(`Error in 'scores' aggregate: ${err.stack}`);
+      console.log(`Error in aggregate: ${err.stack}`);
       throw err;
     });
 }
