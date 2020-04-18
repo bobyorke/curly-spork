@@ -2,6 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 const path = require('path');
+const history = require('connect-history-api-fallback');
 
 const apiRoutes = require('./apiRoutes.js');
 
@@ -15,6 +16,7 @@ app.use(cors());
 app.use('/api/', apiRoutes);
 app.use('/scoresApi/', apiRoutes);
 
+app.use(history());
 app.use(express.static(path.join(__dirname, 'dist')));
 
 const port = process.env.HTTP_PORT || 8081;
