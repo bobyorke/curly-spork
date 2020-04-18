@@ -2,7 +2,7 @@
   <div id="scoreboard" class="overflow-hidden">
     <div id="leaders" class="container-fluid">
       <div class="row">
-        <div v-for="c in scoreColumns" :key="c">
+        <div class="col-6" v-for="c in scoreColumns" :key="c">
           <div
             class="scores leader"
             v-for="sc in orderedScoresColumn(c)"
@@ -110,9 +110,7 @@ div#scoreboard {
 }
 
 .scores {
-  width: 200px;
-  padding: 8px;
-  margin-bottom: 6px;
+  height: 9%;
 }
 #leaders {
   margin-left: 100px;
