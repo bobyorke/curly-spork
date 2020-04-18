@@ -99,7 +99,7 @@ export default {
           console.log(`Error getting scores: ${err}`);
         })
         .finally(() => {
-          setTimeout(this.updateScores, 800);
+          setTimeout(this.updateScores, 1600);
         });
     },
     updateFollowers() {
