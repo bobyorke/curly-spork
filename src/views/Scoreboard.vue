@@ -1,8 +1,8 @@
 <template>
   <div id="scoreboard" class="overflow-hidden">
-    <div id="leaders" class="container-fluid">
-      <div class="row">
-        <div v-for="c in scoreColumns" :key="c">
+    <div id="leaders">
+      <div class="leader-row">
+        <div v-for="c in scoreColumns" :key="c" class="leader-col">
           <div
             class="scores leader"
             v-for="sc in orderedScoresColumn(c)"
@@ -110,18 +110,35 @@ div#scoreboard {
 }
 
 .scores {
-  width: 200px;
-  padding: 8px;
-  margin-bottom: 6px;
+  width: 100%;
+  height: 9%;
 }
 #leaders {
-  margin-left: 100px;
+  height: 100%;
 }
 .leader {
   /*visibility: hidden;*/
   background: red;
 }
+
+.leader-col {
+  float: left;
+  width: 50%;
+  height: 100%;
+}
+
+.leader-row {
+  height: 100%;
+}
+
+.leader-row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
 .follower {
+  display: none;
   background-image: linear-gradient(to right, #032d61, #0163dd);
   position: absolute;
   top: 200px;
