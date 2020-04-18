@@ -138,7 +138,6 @@ div#scoreboard {
 }
 
 .follower {
-  display: none;
   background-image: linear-gradient(to right, #032d61, #0163dd);
   position: absolute;
   top: 200px;
