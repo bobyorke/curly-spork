@@ -1,13 +1,17 @@
 <template>
   <div id="scoreboard" class="overflow-hidden">
-    <div id="leaders">
-      <div
-        class="scores leader"
-        v-for="sc in orderedScores"
-        :key="sc._id"
-        :ref="`score_${sc._id}`"
-      >
-        {{ sc.song.country }}, {{ sc.song.year }}: {{ sc.total }}
+    <div id="leaders" class="container-fluid">
+      <div class="row">
+        <div v-for="c in scoreColumns" :key="c">
+          <div
+            class="scores leader"
+            v-for="sc in orderedScoresColumn(c)"
+            :key="sc._id"
+            :ref="`score_${sc._id}`"
+          >
+            {{ sc.country }}, {{ sc.year }}: {{ sc.totalScore }}
+          </div>
+        </div>
       </div>
     </div>
     <div>
@@ -17,7 +21,7 @@
         :key="sc._id"
         ref="score_follow"
       >
-        {{ sc.song.country }}, {{ sc.song.year }}: {{ sc.total }}
+        {{ sc.country }}, {{ sc.year }}: {{ sc.totalScore }}
       </div>
     </div>
   </div>
@@ -25,6 +29,8 @@
 
 <script>
 import $ from 'jquery';
+
+const scoresPerCol = 11;
 
 export default {
   name: 'Scores',
@@ -34,12 +40,21 @@ export default {
     };
   },
   computed: {
+    scoreColumns() {
+      // needs improvement
+      return Math.ceil(this.scores.length / scoresPerCol);
+    },
     orderedScores() {
       return this.scores.concat()
-        .sort((a, b) => b.total - a.total);
+        .sort((a, b) => b.totalScore - a.totalScore);
     },
   },
   methods: {
+    orderedScoresColumn(colNum) {
+      const start = (colNum - 1) * scoresPerCol;
+      const end = colNum * scoresPerCol;
+      return this.orderedScores.slice(start, end);
+    },
     updateScores() {
       this.$axios.get(`/scoresApi/getScoresTotal/${this.$route.params.scoresId}`)
         .then((response) => {
