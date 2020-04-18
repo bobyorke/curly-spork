@@ -38,14 +38,14 @@ export default {
 
 .active-container {
   height: 100%;
-  width: 14%;
+  width: 10%;
   float: left;
 }
 
 .rest-container {
   background-image: linear-gradient(to right, #032d61, #0163dd);
   height: 100%;
-  width: 86%;
+  width: 90%;
   float: left;
 }
 
