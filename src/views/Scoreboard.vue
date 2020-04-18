@@ -1,41 +1,41 @@
 <template>
   <div id="scoreboard" class="overflow-hidden">
     <div id="leaders">
-      <table>
-        <tbody>
-          <tr v-for="r in scoreRows" :key="r">
-            <td>
-              <div class="scores leader" :ref="scoresRef(r, 0)" >
-                ---
-              </div>
-              <div class="scores leader" :ref="scoresRef(r, 1)" >
-                ---
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="leader-row">
+        <div v-for="c in scoreColumns" :key="c" class="leader-col">
+          <div
+            class="scores leader"
+            v-for="sc in orderedScoresColumn(c)"
+            :key="sc._id"
+            :ref="`score_${sc._id}`"
+          >
+            {{ sc.country }}, {{ sc.year }}: {{ sc.totalScore }}
+          </div>
+        </div>
+      </div>
     </div>
     <div>
-      <div
-        class="scores bg-danger follower"
+      <ScoreElement
         v-for="sc in scores"
         :key="sc._id"
+        :score="sc"
         ref="score_follow"
-      >
-        {{ sc.country }}, {{ sc.year }}: {{ sc.totalScore }}
-      </div>
+      />
     </div>
   </div>
 </template>
 
 <script>
 import $ from 'jquery';
+import ScoreElement from '@/components/ScoreElement.vue';
 
 const scoresPerCol = 11;
 
 export default {
   name: 'Scores',
+  components: {
+    ScoreElement,
+  },
   data() {
     return {
       scores: [],
@@ -86,7 +86,7 @@ export default {
         const scoreName = this.scores[i]._id;
         const ldr = $(this.$refs[`score_${scoreName}`]);
         const pos = ldr.position();
-        const flw = $(this.$refs.score_follow[i]);
+        const flw = $(this.$refs.score_follow[i].$refs.score_follow);
         flw.css('top', pos.top);
         flw.css('left', pos.left);
         flw.css('height', ldr.innerHeight());
@@ -105,8 +105,7 @@ html, body {
   width: 100%;
   height: 100%;
   margin: 0;
-  background: #aaee88;
-  /*background: #021636;*/
+  background: #021636;
 }
 
 div#scoreboard {
@@ -116,27 +115,34 @@ div#scoreboard {
   width: 60%;
   height: 80%;
   color: #ffffff;
-  border: 1px solid black;
 }
 
 .scores {
+  width: 100%;
   height: 9%;
 }
 #leaders {
-  margin-left: 100px;
+  height: 100%;
 }
 .leader {
-  width: 200px;
-  height: 30px;
-  /*visibility: hidden;*/
-  background: red;
+  visibility: hidden;
+  /*background: red;*/
 }
-.follower {
-  background-image: linear-gradient(to right, #032d61, #0163dd);
-  position: absolute;
-  top: 200px;
-  left: -300px;
-  transition: top 1s, left 1s;
+
+.leader-col {
+  float: left;
+  width: 50%;
+  height: 100%;
+}
+
+.leader-row {
+  height: 100%;
+}
+
+.leader-row:after {
+  content: "";
+  display: table;
+  clear: both;
 }
 
 </style>
