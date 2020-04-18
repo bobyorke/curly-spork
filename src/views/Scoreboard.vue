@@ -119,7 +119,7 @@ html, body {
   height: 100%;
   margin: 0;
   background: #021636;
-  /*background-image: url('~@/assets/CV_BG_01.jpg');*/
+  background-image: url('~@/assets/CV_BG_02.jpg');
 }
 
 div#scoreboard {
@@ -167,6 +167,4 @@ div#active-vote {
   height: 50%;
   color: #ffffff;
 }
-
-
 </style>
