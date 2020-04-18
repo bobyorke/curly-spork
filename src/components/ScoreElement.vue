@@ -1,6 +1,6 @@
 <template>
   <div
-    class="scores bg-danger follower"
+    class="scores follower"
     ref="score_follow"
   >
     <div class="active-container">
@@ -9,7 +9,10 @@
       </div>
     </div>
     <div class="rest-container">
-      {{ score.country }}
+      {{ score.country }}, {{ score.year }}
+      <div class="total">
+        {{ score.totalScore }}
+      </div>
     </div>
   </div>
 </template>
@@ -23,13 +26,14 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .follower {
-  background-image: linear-gradient(to right, #032d61, #0163dd);
+  padding: 3px 8px;
   position: absolute;
   top: 200px;
   left: -300px;
   transition: top 1s, left 1s;
+  font-variant: small-caps;
 }
 
 .active-container {
@@ -39,8 +43,13 @@ export default {
 }
 
 .rest-container {
+  background-image: linear-gradient(to right, #032d61, #0163dd);
   height: 100%;
   width: 86%;
   float: left;
+}
+
+.total {
+  float: right;
 }
 </style>

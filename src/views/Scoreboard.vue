@@ -95,8 +95,7 @@ html, body {
   width: 100%;
   height: 100%;
   margin: 0;
-  background: #aaee88;
-  /*background: #021636;*/
+  background: #021636;
 }
 
 div#scoreboard {
@@ -106,7 +105,6 @@ div#scoreboard {
   width: 60%;
   height: 80%;
   color: #ffffff;
-  border: 1px solid black;
 }
 
 .scores {
@@ -117,8 +115,8 @@ div#scoreboard {
   height: 100%;
 }
 .leader {
-  /*visibility: hidden;*/
-  background: red;
+  visibility: hidden;
+  /*background: red;*/
 }
 
 .leader-col {
