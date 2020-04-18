@@ -1,18 +1,20 @@
 <template>
   <div id="scoreboard" class="overflow-hidden">
-    <div id="leaders" class="container-fluid">
-      <div class="row">
-        <div class="col-6" v-for="c in scoreColumns" :key="c">
-          <div
-            class="scores leader"
-            v-for="sc in orderedScoresColumn(c)"
-            :key="sc._id"
-            :ref="`score_${sc._id}`"
-          >
-            {{ sc.country }}, {{ sc.year }}: {{ sc.totalScore }}
-          </div>
-        </div>
-      </div>
+    <div id="leaders">
+      <table>
+        <tbody>
+          <tr v-for="r in scoreRows" :key="r">
+            <td>
+              <div class="scores leader" :ref="scoresRef(r, 0)" >
+                ---
+              </div>
+              <div class="scores leader" :ref="scoresRef(r, 1)" >
+                ---
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
     <div>
       <div
@@ -40,6 +42,9 @@ export default {
     };
   },
   computed: {
+    scoreRows() {
+      return scoresPerCol;
+    },
     scoreColumns() {
       // needs improvement
       return Math.ceil(this.scores.length / scoresPerCol);
@@ -50,6 +55,13 @@ export default {
     },
   },
   methods: {
+    scoresRef(row, col) {
+      const ind = (scoresPerCol * col) + (row - 1);
+      console.log(`ind: ${ind}`);
+      try {
+        return `score_${this.orderedScores[ind]._id}`;
+      } catch { return null; }
+    },
     orderedScoresColumn(colNum) {
       const start = (colNum - 1) * scoresPerCol;
       const end = colNum * scoresPerCol;
@@ -58,8 +70,6 @@ export default {
     updateScores() {
       this.$axios.get(`/scoresApi/getScoresTotal/${this.$route.params.scoresId}`)
         .then((response) => {
-          console.log('scores:-');
-          console.dir(response.data);
           this.scores = response.data;
           setTimeout(this.updateFollowers, 150);
         })
@@ -74,7 +84,7 @@ export default {
     updateFollowers() {
       for (let i = 0; i < this.scores.length; i += 1) {
         const scoreName = this.scores[i]._id;
-        const ldr = $(this.$refs[`score_${scoreName}`][0]);
+        const ldr = $(this.$refs[`score_${scoreName}`]);
         const pos = ldr.position();
         const flw = $(this.$refs.score_follow[i]);
         flw.css('top', pos.top);
@@ -116,6 +126,8 @@ div#scoreboard {
   margin-left: 100px;
 }
 .leader {
+  width: 200px;
+  height: 30px;
   /*visibility: hidden;*/
   background: red;
 }
