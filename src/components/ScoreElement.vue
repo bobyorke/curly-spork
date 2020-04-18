@@ -4,7 +4,7 @@
     ref="score_follow"
   >
     <div class="active-container">
-      <div class="active" v-if="score.activeScore > 0">
+      <div class="active rounded" v-if="score.activeScore > 0">
         {{ score.activeScore }}
       </div>
     </div>
@@ -40,6 +40,19 @@ export default {
   height: 100%;
   width: 14%;
   float: left;
+  padding-top: 8px;
+}
+
+.active {
+  background: white;
+  color: black;
+  margin: auto;
+  width: 4vh;
+  height: 4vh;
+  text-align: center;
+  line-height: 4vh;
+  font-size: 3vh;
+  font-weight: bold;
 }
 
 .rest-container {
