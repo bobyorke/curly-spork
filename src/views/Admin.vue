@@ -22,7 +22,7 @@
         :participants="voters"
       />
       <h3 class="mt-3">Participants</h3>
-      <VoterForm v-for="vt in participants" :key="vt.uuid" :voterData="vt" />
+      <VoterForm v-for="pt in participants" :key="pt.uuid" :voterData="pt" />
       <VoterForm :voterData="newVoterData()" />
       <h3 class="mt-3">Songs</h3>
       <SongForm v-for="sd in songs" :key="sd.uuid" :songData="sd" />
@@ -93,7 +93,7 @@ export default {
         chosenBy: null,
       };
     },
-    newVoterData() {
+    newParticipantData() {
       return {
         _id: null,
         scoresId: this.quiz.scoresId,
