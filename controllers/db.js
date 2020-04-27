@@ -4,7 +4,7 @@ const mongoClient = mongo.MongoClient;
 const config = require('../config.json');
 
 const mongoUrl = 'mongodb://localhost:27017';
-const dbName = 'coronavision';
+const dbName = 'zoombarquiz';
 
 const scoresCache = {};
 
