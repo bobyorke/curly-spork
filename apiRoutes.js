@@ -16,7 +16,7 @@ router.get('/test', (req, res) => {
 
 router.post('/create', (req, res) => {
   db.createContest(req.body.sid, req.body.uuid, req.body.scoresOptions)
-    .then(() => { 
+    .then(() => {
       res.json({
         status: 'ok',
       });
@@ -30,8 +30,7 @@ router.post('/create', (req, res) => {
 router.get('/getContest/:uuid', (req, res) => {
   db.getContest(req.params.uuid)
     .then((result) => {
-      if (result) { res.json(result); }
-      else { res.status(404).send(`No conteest found for ${req.params.uuid}`); }
+      if (result) { res.json(result); } else { res.status(404).send(`No conteest found for ${req.params.uuid}`); }
     })
     .catch((err) => {
       console.log(`Error getting contest: ${err.stack}`);
