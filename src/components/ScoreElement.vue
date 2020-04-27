@@ -84,6 +84,7 @@ export default {
 }
 
 .flag-container {
+  display: inline-block;
   width: 3vw;
   text-align: center;
   margin-right: 0.3vw;
