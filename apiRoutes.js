@@ -62,39 +62,39 @@ router.post('/deleteParticipant', (req, res) => {
     .catch((err) => { res.status(500).send(`Error deleting participant: ${err.message}`); });
 });
 
-router.get('/getVoters/:scoresId', (req, res) => {
-  db.getVoters(req.params.scoresId)
+router.get('/getRounds/:scoresId', (req, res) => {
+  db.getRounds(req.params.scoresId)
     .then((result) => {
       res.json(result);
     })
     .catch((err) => {
-      console.log(`Error getting voters: ${err.stack}`);
-      res.status(500).send(`Error getting voters: ${err.message}`);
+      console.log(`Error getting rounds: ${err.stack}`);
+      res.status(500).send(`Error getting rounds: ${err.message}`);
     });
 });
 
-router.post('/addVoter', (req, res) => {
-  db.addVoter(req.body)
+router.post('/addRound', (req, res) => {
+  db.addRound(req.body)
     .then(() => { res.send('OK'); })
-    .catch((err) => { res.status(500).send(`Error adding voter: ${err.message}`); });
+    .catch((err) => { res.status(500).send(`Error adding round: ${err.message}`); });
 });
 
-router.post('/deleteVoter', (req, res) => {
-  db.deleteVoter(req.body)
+router.post('/deleteRound', (req, res) => {
+  db.deleteRound(req.body)
     .then(() => { res.send('OK'); })
-    .catch((err) => { res.status(500).send(`Error deleting voter: ${err.message}`); });
+    .catch((err) => { res.status(500).send(`Error deleting round: ${err.message}`); });
 });
 
-router.get('/getActiveVoter/:scoresId', (req, res) => {
-  db.getActiveVoter(req.params.scoresId)
+router.get('/getActiveRound/:scoresId', (req, res) => {
+  db.getActiveRound(req.params.scoresId)
     .then((result) => { res.json(result); })
-    .catch((err) => { res.status(500).send(`Error getting active voter: ${err.message}`); });
+    .catch((err) => { res.status(500).send(`Error getting active round: ${err.message}`); });
 });
 
-router.post('/setActiveVoter', (req, res) => {
-  db.setActiveVoter(req.body)
+router.post('/setActiveRound', (req, res) => {
+  db.setActiveRound(req.body)
     .then(() => { res.send('OK'); })
-    .catch((err) => { res.status(500).send(`Error setting active voter: ${err.message}`); });
+    .catch((err) => { res.status(500).send(`Error setting active round: ${err.message}`); });
 });
 
 router.post('/submitScores', (req, res) => {
@@ -103,8 +103,8 @@ router.post('/submitScores', (req, res) => {
     .catch((err) => { res.status(500).send(`Error submitting scores: ${err.message}`); });
 });
 
-router.get('/getScores/:scoresId/:voterId', (req, res) => {
-  db.getScores(req.params.scoresId, req.params.voterId)
+router.get('/getScores/:scoresId/:roundId', (req, res) => {
+  db.getScores(req.params.scoresId, req.params.roundId)
     .then((result) => {
       res.json(result);
     })
