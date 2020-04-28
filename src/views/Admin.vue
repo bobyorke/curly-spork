@@ -16,17 +16,17 @@
         Created: {{ createdDateNice }}.
       </p>
       <h3 class="mt-3">Vote!!</h3>
-      <Voting
+      <Scoring
         :scoresId="quiz.scoresId"
-        :songs="songs"
-        :participants="voters"
+        :rounds="rounds"
+        :participants="participants"
       />
+      <h3 class="mt-3">Rounds</h3>
+      <RoundForm v-for="rd in rounds" :key="rd.uuid" :roundData="rd" />
+      <RoundForm :roundData="newRoundData()" />
       <h3 class="mt-3">Participants</h3>
-      <VoterForm v-for="pt in participants" :key="pt.uuid" :voterData="pt" />
-      <VoterForm :voterData="newVoterData()" />
-      <h3 class="mt-3">Songs</h3>
-      <SongForm v-for="sd in songs" :key="sd.uuid" :songData="sd" />
-      <SongForm :songData="newSongData()" />
+      <ParticipantForm v-for="pt in participants" :key="pt.uuid" :participantData="pt" />
+      <ParticipantForm :participantData="newParticipantData()" />
     </div>
   </div>
 </template>
@@ -34,9 +34,9 @@
 <script>
 import moment from 'moment';
 
-import SongForm from '@/components/SongForm.vue';
-import VoterForm from '@/components/VoterForm.vue';
-import Voting from '@/components/Voting.vue';
+import ParticipantForm from '@/components/ParticipantForm.vue';
+import RoundForm from '@/components/RoundForm.vue';
+import Scoring from '@/components/Scoring.vue';
 
 export default {
   data() {
@@ -47,9 +47,9 @@ export default {
     };
   },
   components: {
-    SongForm,
-    VoterForm,
-    Voting,
+    ParticipantForm,
+    RoundForm,
+    Scoring,
   },
   computed: {
     createdDateNice() {
