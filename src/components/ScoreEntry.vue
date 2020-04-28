@@ -32,7 +32,7 @@
 
 <script>
 export default {
-  name: 'VoteEntry',
+  name: 'ScoreEntry',
   props: {
     active: Boolean,
     scoresId: String,

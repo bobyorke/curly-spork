@@ -42,7 +42,7 @@ export default {
   data() {
     return {
       quiz: undefined,
-      songs: [],
+      rounds: [],
       participants: [],
     };
   },
@@ -80,17 +80,11 @@ export default {
         .then(this.getVoters)
         .catch(() => { this.quiz = null; });
     },
-    newSongData() {
+    newRoundData() {
       return {
         _id: null,
         scoresId: this.quiz.scoresId,
-        country: null,
-        year: null,
-        englishName: null,
-        localName: null,
-        performingArtist: null,
-        credits: null,
-        chosenBy: null,
+        name: null,
       };
     },
     newParticipantData() {

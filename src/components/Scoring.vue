@@ -19,7 +19,7 @@
           </div>
         </div>
       </div>
-      <VoteEntry
+      <ScoreEntry
         v-for="voter in voters"
         :key="voter._id"
         :scoresId="scoresId"
@@ -34,12 +34,12 @@
 </template>
 
 <script>
-import VoteEntry from '@/components/VoteEntry.vue';
+import ScoreEntry from '@/components/ScoreEntry.vue';
 
 export default {
   name: 'Voting',
   components: {
-    VoteEntry,
+    ScoreEntry,
   },
   props: {
     scoresId: String,
