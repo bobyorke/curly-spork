@@ -5,22 +5,22 @@
     <div class="col-2">
       <b-button variant="danger"
         v-if="!active"
-        @click="$emit('setActive', voter)"
+        @click="$emit('setActive', round)"
       ><b-icon-circle/></b-button>
       <b-button variant="success"
         v-else
         @click="$emit('setActive', null)"
       ><b-icon-circle-fill/></b-button>
-      {{ voter.name }}
+      {{ round.name }}
     </div>
     <div class="col-10">
-      <div class="container-fluid" v-if="active || !$parent.activeVoterId">
+      <div class="container-fluid" v-if="active || !$parent.activeRoundId">
         <div class="row">
-          <div class="col-12 col-lg-2" v-for="sc in scoresOptions" :key="sc">
+          <div class="col-12 col-lg-2" v-for="pt in participants" :key="pt._id">
             <b-select
-              :options="songOptions"
-              v-model="scores[sc]"
-              @change="(e) => onChange(e, sc)"
+              :options="pointsArray(pt.name)"
+              v-model="scores[pt._id]"
+              @change="(e) => onChange(e, pt)"
             >
             </b-select>
           </div>
@@ -36,22 +36,20 @@ export default {
   props: {
     active: Boolean,
     scoresId: String,
-    voter: Object,
-    songs: Array,
-    scoresOptions: Array,
+    round: Object,
+    participants: Array,
   },
   data() {
     return {
       scores: {},
-      alreadySelected: [],
     };
   },
   mounted() {
     this.scores = Object.fromEntries(
-      this.scoresOptions.map((sc) => [sc, null]),
+      this.participants.map((pt) => [pt._id, null]),
     );
     this.$axios.get(
-      `/scoresApi/getScores/${this.scoresId}/${this.voter._id}`,
+      `/scoresApi/getScores/${this.scoresId}/${this.round._id}`,
     )
       .then((response) => {
         response.data.scores.forEach((sc) => {
@@ -63,27 +61,22 @@ export default {
       })
       .catch(() => { /* continue */ });
   },
-  computed: {
-    songOptions() {
-      return [
-        { value: null, text: 'select...', disabled: false },
-      ].concat(this.songs
-        .map((s) => ({
-          value: s,
-          text: `${s.country}/${s.year}`,
-          disabled: this.alreadySelected.includes(s),
-        }))
-        .sort((a, b) => a.text.localeCompare(b.text)));
-    },
-  },
   methods: {
+    pointsArray(name) {
+      return [{ value: null, text: name }]
+        .concat(
+          [...Array(35).keys()]
+            .map((x) => ({
+              value: x,
+              text: x,
+            })),
+        );
+    },
     // onChange(evt, score) {
     onChange() {
-      this.alreadySelected = Object.values(this.scores)
-        .filter((x) => x !== null);
       const scoresData = {
         scoresId: this.scoresId,
-        voterId: this.voter._id,
+        roundId: this.round._id,
         scores: [],
       };
       Object.entries(this.scores).forEach(([k, v]) => {

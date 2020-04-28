@@ -1,33 +1,14 @@
 <template>
-  <div class="voting">
+  <div class="scoring">
     <div class="container-fluid">
-      <div class="row">
-        <div class="col-2"></div>
-        <div class="col-10">
-          <div class="container-fluid">
-            <div class="row">
-              <div
-                v-for="sc in scoresOptions"
-                :key="sc"
-                class="col-12 col-lg-2"
-              >
-                <h5 class="text-center">
-                  {{ pointsSuffix(sc) }}
-                </h5>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
       <ScoreEntry
-        v-for="voter in voters"
-        :key="voter._id"
+        v-for="round in rounds"
+        :key="round._id"
         :scoresId="scoresId"
-        :voter="voter"
-        :songs="songs"
-        :active="activeVoterId === voter._id"
-        :scoresOptions="scoresOptions"
-        @setActive="setActiveVoter"
+        :round="round"
+        :participants="participants"
+        :active="activeRoundId === round._id"
+        @setActive="setActiveRound"
       />
     </div>
   </div>
@@ -37,57 +18,49 @@
 import ScoreEntry from '@/components/ScoreEntry.vue';
 
 export default {
-  name: 'Voting',
+  name: 'Scoring',
   components: {
     ScoreEntry,
   },
   props: {
     scoresId: String,
-    songs: Array,
-    voters: Array,
+    participants: Array,
+    rounds: Array,
     scoresOptions: Array,
   },
   data() {
     return {
-      activeVoterId: null,
+      activeRoundId: null,
     };
   },
-  computed: {
-    voterNames() {
-      return Object.values(this.voters);
-    },
-  },
   methods: {
-    pointsSuffix(label) {
-      return `${label} point${/^1$/.test(label) ? '' : 's'}`;
-    },
-    getActiveVoter() {
-      this.$axios.get(`/scoresApi/getActiveVoter/${this.scoresId}`)
+    getActiveRound() {
+      this.$axios.get(`/scoresApi/getActiveRound/${this.scoresId}`)
         .then((response) => {
-          if (response.data.activeVoterId) {
-            this.activeVoterId = response.data.activeVoterId;
+          if (response.data.activeRoundId) {
+            this.activeRoundId = response.data.activeRoundId;
           } else {
-            this.activeVoterId = null;
+            this.activeRoundId = null;
           }
         })
         .catch((err) => {
-          console.log(`Error getting active voter: ${err}`);
+          console.log(`Error getting active round: ${err}`);
         });
     },
-    setActiveVoter(value) {
-      this.activeVoterId = value ? value._id : null;
-      this.$axios.post('/scoresApi/setActiveVoter', {
+    setActiveRound(value) {
+      this.activeRoundId = value ? value._id : null;
+      this.$axios.post('/scoresApi/setActiveRound', {
         scoresId: this.scoresId,
-        activeVoterId: value ? value._id : null,
-        activeVoterName: value ? value.name : null,
+        activeRoundId: value ? value._id : null,
+        activeRoundName: value ? value.name : null,
       })
         .catch((err) => {
-          this.$bvModal.msgBoxOk(`Error setting active voter: ${err}`);
+          this.$bvModal.msgBoxOk(`Error setting active round: ${err}`);
         });
     },
   },
   mounted() {
-    this.getActiveVoter();
+    this.getActiveRound();
   },
 };
 </script>

@@ -7,13 +7,13 @@
       <b-input class="ml-2" placeholder="particpant name" :state="nameOk"
         v-model="form.name">
       </b-input>
+      <b-button class="ml-2"
+        variant="danger" type="reset"
+      >reset</b-button>
       <b-button v-if="participantData._id !== null" class="ml-2"
         variant="danger" @click="deleteEntry"
       >delete</b-button>
-      <b-button v-if="changed" class="ml-2"
-        variant="danger" type="reset"
-      >reset</b-button>
-      <b-button v-if="changed && readyToSave" class="ml-2"
+      <b-button class="ml-2"
         variant="success" type="submit"
       >save</b-button>
     </b-form>
@@ -39,9 +39,6 @@ export default {
   computed: {
     nameOk() {
       return (this.form.name || '').length > 0;
-    },
-    readyToSave() {
-      return this.nameOk;
     },
   },
   methods: {
