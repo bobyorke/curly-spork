@@ -15,7 +15,7 @@
         >{{ quiz.scoresId }}</a>.<br />
         Created: {{ createdDateNice }}.
       </p>
-      <h3 class="mt-3">Vote!!</h3>
+      <h3 class="mt-3">Scores!!</h3>
       <Scoring
         :scoresId="quiz.scoresId"
         :rounds="rounds"
@@ -57,27 +57,27 @@ export default {
     },
   },
   methods: {
-    getSongs() {
-      this.$axios.get(`/scoresApi/getSongs/${this.quiz.scoresId}`)
-        .then((response) => { this.songs = response.data; })
-        .catch((err) => {
-          // eslint-disable-next-line
-          console.log(`Error getting songs array: ${err}`);
-        });
-    },
-    getVoters() {
-      this.$axios.get(`/scoresApi/getVoters/${this.quiz.scoresId}`)
+    getParticipants() {
+      this.$axios.get(`/scoresApi/getParticipants/${this.quiz.scoresId}`)
         .then((response) => { this.participants = response.data; })
         .catch((err) => {
           // eslint-disable-next-line
           console.log(`Error getting participants array: ${err}`);
         });
     },
+    getRounds() {
+      this.$axios.get(`/scoresApi/getRounds/${this.quiz.scoresId}`)
+        .then((response) => { this.rounds = response.data; })
+        .catch((err) => {
+          // eslint-disable-next-line
+          console.log(`Error getting rounds array: ${err}`);
+        });
+    },
     lookupScoresId() {
       this.$axios.get(`/scoresApi/getQuiz/${this.$route.params.uuid}`)
         .then((response) => { this.quiz = response.data; })
-        .then(this.getSongs)
-        .then(this.getVoters)
+        .then(this.getParticipants)
+        .then(this.getRounds)
         .catch(() => { this.quiz = null; });
     },
     newRoundData() {
