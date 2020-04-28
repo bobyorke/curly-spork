@@ -29,21 +29,17 @@ function mongoObjId(id) {
   return id;
 };
 
-async function createContest(scoresId, adminUuid, scoresOptions = config.defaultScoresOptions) {
+async function createQuiz(scoresId, adminUuid) {
   if (!scoresId) { throw Error('scoresId missing'); }
   if (!adminUuid) { throw Error('adminUuid missing'); }
-  const scoresOpts = (typeof scoresOptions === 'string')
-    ? scoresOptions.split(/[\s,]+/)
-    : scoresOptions;
-  return (await db).collection('contests')
+  return (await db).collection('quizes')
     .insertOne({
       scoresId,
       adminUuid,
-      scoresOptions: scoresOpts,
       creationDate: new Date(),
     })
       .catch((err) => {
-        console.log(`Error inserting into 'contests' collection: ${err.stack}`);
+        console.log(`Error inserting into 'quizes' collection: ${err.stack}`);
         if (err.code == 11000) {
           throw Error(`${scoresId} already exists.`);
         } else {
@@ -52,129 +48,129 @@ async function createContest(scoresId, adminUuid, scoresOptions = config.default
       });
 }
 
-async function getContest(adminUuid) {
+async function getQuiz(adminUuid) {
   if (!adminUuid) { throw Error('adminUuid missing'); }
-  return (await db).collection('contests')
+  return (await db).collection('quizes')
     .findOne({ adminUuid })
     .catch((err) => {
-      console.log(`Error in findOne from 'contests' collection: ${err.stack}`);
+      console.log(`Error in findOne from 'quizes' collection: ${err.stack}`);
       throw err;
     });
 }
 
-async function getSongs(scoresId) {
+async function getParticipants(scoresId) {
   if (!scoresId) { throw Error('scoresId missing'); }
-  return (await db).collection('songs')
+  return (await db).collection('participants')
     .find({ scoresId }).toArray()
     .catch((err) => {
-      console.log(`Error in find from 'songs' collection: ${err.stack}`);
+      console.log(`Error in find from 'participants' collection: ${err.stack}`);
       throw err;
     });
 }
 
-async function addSong(songData) {
-  if (!songData.scoresId) { throw Error('scoresId missing'); }
-  const _id = mongoObjId(songData._id);
-  delete(songData._id);
-  const coll = (await db).collection('songs')
+async function addParticipant(participantData) {
+  if (!participantData.scoresId) { throw Error('scoresId missing'); }
+  const _id = mongoObjId(participantData._id);
+  delete(participantData._id);
+  const coll = (await db).collection('participants')
   const prm = (_id)
     ? (newData) => coll.replaceOne({ _id }, newData)
     : (newData) => coll.insertOne(newData);
-  return prm(songData)
-    .then(() => { clearScoresCache(songData.scoresId); })
+  return prm(participantData)
+    .then(() => { clearScoresCache(participantData.scoresId); })
     .catch((err) => {
-      console.log(`Error adding to 'songs' collection: ${err.stack}`);
+      console.log(`Error adding to 'participants' collection: ${err.stack}`);
       throw err;
     });
 }
 
-async function deleteSong(songData) {
-  if (!songData._id) { throw Error('_id missing'); }
-  if (!songData.scoresId) { throw Error('scoresId missing'); }
-  const _id = mongoObjId(songData._id);
-  return (await db).collection('songs')
+async function deleteParticipant(participantData) {
+  if (!participantData._id) { throw Error('_id missing'); }
+  if (!participantData.scoresId) { throw Error('scoresId missing'); }
+  const _id = mongoObjId(participantData._id);
+  return (await db).collection('participants')
     .deleteOne({ _id })
-    .then(() => { clearScoresCache(songData.scoresId); })
+    .then(() => { clearScoresCache(participantData.scoresId); })
     .catch((err) => {
-      console.log(`Error deleting from 'songs' collection: ${err.stack}`);
+      console.log(`Error deleting from 'participants' collection: ${err.stack}`);
       throw err;
     });
 }
 
-async function getVoters(scoresId) {
+async function getRounds(scoresId) {
   if (!scoresId) { throw Error('scoresId missing'); }
-  return (await db).collection('voters')
+  return (await db).collection('rounds')
     .find({ scoresId }).toArray()
     .catch((err) => {
-      console.log(`Error in find from 'voters' collection: ${err.stack}`);
+      console.log(`Error in find from 'rounds' collection: ${err.stack}`);
       throw err;
     });
 }
 
-async function addVoter(voterData) {
-  if (!voterData.scoresId) { throw Error('scoresId missing'); }
-  if (!voterData.name) { throw Error('name missing'); }
-  voterData._id = mongoObjId(voterData._id);
-  const coll = (await db).collection('voters');
-  const prm = (voterData._id) 
-    ? (newData) => coll.replaceOne({ _id: voterData._id }, newData)
+async function addRound(roundData) {
+  if (!roundData.scoresId) { throw Error('scoresId missing'); }
+  if (!roundData.name) { throw Error('name missing'); }
+  roundData._id = mongoObjId(roundData._id);
+  const coll = (await db).collection('rounds');
+  const prm = (roundData._id) 
+    ? (newData) => coll.replaceOne({ _id: roundData._id }, newData)
     : (newData) => coll.insertOne(newData);
-  return prm(voterData)
+  return prm(roundData)
     .catch((err) => {
-      console.log(`Error adding to 'voters' collection: ${err.stack}`);
+      console.log(`Error adding to 'rounds' collection: ${err.stack}`);
       throw err;
     });
 }
 
-async function deleteVoter(voterData) {
-  if (!voterData._id) { throw Error('_id missing'); }
-  if (!voterData.scoresId) { throw Error('scoresId missing'); }
-  const voters = (await db).collection('voters');
+async function deleteRound(roundData) {
+  if (!roundData._id) { throw Error('_id missing'); }
+  if (!roundData.scoresId) { throw Error('scoresId missing'); }
+  const rounds = (await db).collection('rounds');
   const scores = (await db).collection('scores');
-  const _id = mongoObjId(voterData._id);
+  const _id = mongoObjId(roundData._id);
   try {
-    await voters.deleteOne({ _id });
+    await rounds.deleteOne({ _id });
     await scores.deleteOne({
-      scoresId: voterData.scoresId,
-      voterId: _id,
+      scoresId: roundData.scoresId,
+      roundId: _id,
     });
   } catch(err) {
-    console.log(`Error deleting from 'voters' collection: ${err.stack}`);
+    console.log(`Error deleting from 'rounds' collection: ${err.stack}`);
     throw err;
   }
 }
 
-async function setActiveVoter(activeVoterData) {
-  if (!activeVoterData.scoresId) { throw Error('scoresId missing'); }
-  activeVoterData.activeVoterId = mongoObjId(activeVoterData.activeVoterId);
-  return (await db).collection('activeVoter')
+async function setActiveRound(activeRoundData) {
+  if (!activeRoundData.scoresId) { throw Error('scoresId missing'); }
+  activeRoundData.activeRoundId = mongoObjId(activeRoundData.activeRoundId);
+  return (await db).collection('activeRound')
     .replaceOne(
-      { scoresId: activeVoterData.scoresId },
-      activeVoterData,
+      { scoresId: activeRoundData.scoresId },
+      activeRoundData,
       { upsert: true },
     )
-    .then(() => { clearScoresCache(activeVoterData.scoresId); })
+    .then(() => { clearScoresCache(activeRoundData.scoresId); })
     .catch((err) => {
-      console.log(`Error in replaceOne in 'activeVoter' collection: ${err.stack}`);
+      console.log(`Error in replaceOne in 'activeRound' collection: ${err.stack}`);
       throw err;
     });
 }
 
-async function getActiveVoter(scoresId) {
+async function getActiveRound(scoresId) {
   if (!scoresId) { throw Error('scoresId missing'); }
-  return (await db).collection('activeVoter')
+  return (await db).collection('activeRound')
     .findOne({ scoresId })
     .catch((err) => {
-      console.log(`Error in findOne from 'activeVoter' collection: ${err.stack}`);
+      console.log(`Error in findOne from 'activeRound' collection: ${err.stack}`);
       throw err;
     });
 };
 
 async function submitScores(scoresData) {
   if (!scoresData.scoresId) { throw Error('scoresId missing'); }
-  if (!scoresData.voterId) { throw Error('voterId missing'); }
+  if (!scoresData.roundId) { throw Error('roundId missing'); }
   if (!scoresData.scores) { throw Error('scores missing'); }
-  scoresData.voterId = mongoObjId(scoresData.voterId);
+  scoresData.roundId = mongoObjId(scoresData.roundId);
   scoresData.scores.forEach((s) => {
     s.songId = mongoObjId(s.songId);
   });
@@ -182,7 +178,7 @@ async function submitScores(scoresData) {
     .replaceOne(
       {
         scoresId: scoresData.scoresId,
-        voterId: scoresData.voterId,
+        roundId: scoresData.roundId,
       },
       scoresData,
       { upsert: true },
@@ -194,14 +190,14 @@ async function submitScores(scoresData) {
     });
 };
 
-async function getScores(scoresId, voterId = null) {
+async function getScores(scoresId, roundId = null) {
   if (!scoresId) { throw Error('scoresId missing'); }
   const findQuery = { scoresId };
-  if (voterId) {
-    findQuery.voterId = mongoObjId(voterId);
+  if (roundId) {
+    findQuery.roundId = mongoObjId(roundId);
   }
   const coll = (await db).collection('scores')
-  const prm = (voterId)
+  const prm = (roundId)
     ? () => coll.findOne(findQuery)
     : () => coll.find(findQuery).toArray();
   return prm()
@@ -221,15 +217,15 @@ async function getScoresTotal(scoresId) {
     { $unwind: '$scores' },
     { 
       $lookup: {
-        from: 'activeVoter',
-        localField: 'voterId',
-        foreignField: 'activeVoterId',
-        as: 'activeVoter', 
+        from: 'activeRound',
+        localField: 'roundId',
+        foreignField: 'activeRoundId',
+        as: 'activeRound', 
       }
     },
     {
       $unwind: {
-        path: '$activeVoter',
+        path: '$activeRound',
         preserveNullAndEmptyArrays: true,
       },
     },
@@ -237,7 +233,7 @@ async function getScoresTotal(scoresId) {
       $set: {
         'scores.activeScore': {
           $cond: [
-            '$activeVoter._id',
+            '$activeRound._id',
             '$scores.score',
             0,
           ],
@@ -317,16 +313,16 @@ async function getScoresTotal(scoresId) {
 }
 
 module.exports = {
-  createContest,
-  getContest,
-  getSongs,
-  addSong,
-  deleteSong,
-  getVoters,
-  addVoter,
-  deleteVoter,
-  setActiveVoter,
-  getActiveVoter,
+  createQuiz,
+  getQuiz,
+  getParticipants,
+  addParticipant,
+  deleteParticipant,
+  getRounds,
+  addRound,
+  deleteRound,
+  setActiveRound,
+  getActiveRound,
   submitScores,
   getScores,
   getScoresTotal,
