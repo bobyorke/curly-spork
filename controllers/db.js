@@ -29,21 +29,17 @@ function mongoObjId(id) {
   return id;
 };
 
-async function createContest(scoresId, adminUuid, scoresOptions = config.defaultScoresOptions) {
+async function createQuiz(scoresId, adminUuid) {
   if (!scoresId) { throw Error('scoresId missing'); }
   if (!adminUuid) { throw Error('adminUuid missing'); }
-  const scoresOpts = (typeof scoresOptions === 'string')
-    ? scoresOptions.split(/[\s,]+/)
-    : scoresOptions;
-  return (await db).collection('contests')
+  return (await db).collection('quizes')
     .insertOne({
       scoresId,
       adminUuid,
-      scoresOptions: scoresOpts,
       creationDate: new Date(),
     })
       .catch((err) => {
-        console.log(`Error inserting into 'contests' collection: ${err.stack}`);
+        console.log(`Error inserting into 'quizes' collection: ${err.stack}`);
         if (err.code == 11000) {
           throw Error(`${scoresId} already exists.`);
         } else {
@@ -52,51 +48,51 @@ async function createContest(scoresId, adminUuid, scoresOptions = config.default
       });
 }
 
-async function getContest(adminUuid) {
+async function getQuiz(adminUuid) {
   if (!adminUuid) { throw Error('adminUuid missing'); }
-  return (await db).collection('contests')
+  return (await db).collection('quizes')
     .findOne({ adminUuid })
     .catch((err) => {
-      console.log(`Error in findOne from 'contests' collection: ${err.stack}`);
+      console.log(`Error in findOne from 'quizes' collection: ${err.stack}`);
       throw err;
     });
 }
 
-async function getSongs(scoresId) {
+async function getParticipants(scoresId) {
   if (!scoresId) { throw Error('scoresId missing'); }
-  return (await db).collection('songs')
+  return (await db).collection('participants')
     .find({ scoresId }).toArray()
     .catch((err) => {
-      console.log(`Error in find from 'songs' collection: ${err.stack}`);
+      console.log(`Error in find from 'participants' collection: ${err.stack}`);
       throw err;
     });
 }
 
-async function addSong(songData) {
-  if (!songData.scoresId) { throw Error('scoresId missing'); }
-  const _id = mongoObjId(songData._id);
-  delete(songData._id);
-  const coll = (await db).collection('songs')
+async function addParticipant(participantData) {
+  if (!participantData.scoresId) { throw Error('scoresId missing'); }
+  const _id = mongoObjId(participantData._id);
+  delete(participantData._id);
+  const coll = (await db).collection('participant')
   const prm = (_id)
     ? (newData) => coll.replaceOne({ _id }, newData)
     : (newData) => coll.insertOne(newData);
-  return prm(songData)
-    .then(() => { clearScoresCache(songData.scoresId); })
+  return prm(participantData)
+    .then(() => { clearScoresCache(participantData.scoresId); })
     .catch((err) => {
-      console.log(`Error adding to 'songs' collection: ${err.stack}`);
+      console.log(`Error adding to 'participants' collection: ${err.stack}`);
       throw err;
     });
 }
 
-async function deleteSong(songData) {
-  if (!songData._id) { throw Error('_id missing'); }
-  if (!songData.scoresId) { throw Error('scoresId missing'); }
-  const _id = mongoObjId(songData._id);
+async function deleteParticipant(participantData) {
+  if (!participantData._id) { throw Error('_id missing'); }
+  if (!participantData.scoresId) { throw Error('scoresId missing'); }
+  const _id = mongoObjId(participantData._id);
   return (await db).collection('songs')
     .deleteOne({ _id })
-    .then(() => { clearScoresCache(songData.scoresId); })
+    .then(() => { clearScoresCache(participantData.scoresId); })
     .catch((err) => {
-      console.log(`Error deleting from 'songs' collection: ${err.stack}`);
+      console.log(`Error deleting from 'participants' collection: ${err.stack}`);
       throw err;
     });
 }
@@ -317,11 +313,11 @@ async function getScoresTotal(scoresId) {
 }
 
 module.exports = {
-  createContest,
-  getContest,
-  getSongs,
-  addSong,
-  deleteSong,
+  createQuiz,
+  getQuiz,
+  getParticipants,
+  addParticipant,
+  deleteParticipant,
   getVoters,
   addVoter,
   deleteVoter,
