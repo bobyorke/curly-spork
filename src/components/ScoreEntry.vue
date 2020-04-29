@@ -45,23 +45,25 @@ export default {
     };
   },
   mounted() {
-    this.scores = Object.fromEntries(
-      this.participants.map((pt) => [pt._id, null]),
-    );
-    this.$axios.get(
-      `/scoresApi/getScores/${this.scoresId}/${this.round._id}`,
-    )
-      .then((response) => {
-        if (response.data && response.data.scores) {
-          response.data.scores.forEach((sc) => {
-            const pt = this.participants.find((p) => p._id === sc.participantId);
-            if (pt) {
-              this.scores[pt._id] = sc.score;
-            }
-          });
-        }
-      })
-      .catch(() => { /* continue */ });
+    setTimeout(() => {
+      this.scores = Object.fromEntries(
+        this.participants.map((pt) => [pt._id, null]),
+      );
+      this.$axios.get(
+        `/scoresApi/getScores/${this.scoresId}/${this.round._id}`,
+      )
+        .then((response) => {
+          if (response.data && response.data.scores) {
+            response.data.scores.forEach((sc) => {
+              const pt = this.participants.find((p) => p._id === sc.participantId);
+              if (pt) {
+                this.scores[pt._id] = sc.score;
+              }
+            });
+          }
+        })
+        .catch(() => { /* continue */ });
+    });
   },
   methods: {
     pointsArray(name) {
