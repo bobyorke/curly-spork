@@ -281,10 +281,15 @@ async function getScoresTotal(scoresId) {
     },
     {
       $set: {
-        totalScore: '$scores.totalScore',
+        totalScore: { $ifNull: [ '$scores.totalScore', 0 ] },
         activeScore: { 
           $cond: [
-            { $ne: [ '$scores.activeRoundId', null ] },
+            {
+              $and: [
+                '$scores.activeScore',
+                '$scores.activeRoundId',
+              ]
+            },
             '$scores.activeScore',
             null,
           ],

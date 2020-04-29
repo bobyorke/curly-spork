@@ -63,8 +63,7 @@ export default {
         .sort((a, b) => this.scoresSort('totalScore', a, b));
     },
     activeScores() {
-      return this.scores.filter((sc) => sc.activeScore !== null)
-        .sort((a, b) => this.scoresSort('activeScore', a, b));
+      return this.scores.filter((sc) => sc.activeScore !== null);
     },
   },
   methods: {
