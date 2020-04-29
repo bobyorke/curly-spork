@@ -25,7 +25,7 @@
       </div>
     </div>
     <div id="active-vote" v-if="activeScores.length > 0">
-      <ActiveVoter
+      <ActiveRound
         :scores="activeScores"
       />
     </div>
@@ -35,7 +35,7 @@
 <script>
 import $ from 'jquery';
 import ScoreElement from '@/components/ScoreElement.vue';
-import ActiveVoter from '@/components/ActiveVoter.vue';
+import ActiveRound from '@/components/ActiveRound.vue';
 
 const scoresPerCol = 11;
 
@@ -43,7 +43,7 @@ export default {
   name: 'Scores',
   components: {
     ScoreElement,
-    ActiveVoter,
+    ActiveRound,
   },
   data() {
     return {

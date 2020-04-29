@@ -4,7 +4,7 @@
     <div class="container-fluid">
       <div class="row active-score" v-for="sc in scores" :key="sc._id">
         <div class="col-10">
-          {{ sc.country }}, {{ sc.year}}
+          {{ sc.name }}
         </div>
         <div class="col-2">
           {{ sc.activeScore }}
