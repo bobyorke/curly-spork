@@ -52,12 +52,14 @@ export default {
       `/scoresApi/getScores/${this.scoresId}/${this.round._id}`,
     )
       .then((response) => {
-        response.data.scores.forEach((sc) => {
-          const song = this.songs.find((s) => s._id === sc.songId);
-          if (song) {
-            this.scores[`${sc.score}`] = song;
-          }
-        });
+        if (response.data && response.data.scores) {
+          response.data.scores.forEach((sc) => {
+            const pt = this.participants.find((p) => p._id === sc.participantId);
+            if (pt) {
+              this.scores[pt._id] = sc.score;
+            }
+          });
+        }
       })
       .catch(() => { /* continue */ });
   },
@@ -80,10 +82,10 @@ export default {
         scores: [],
       };
       Object.entries(this.scores).forEach(([k, v]) => {
-        if (v !== null && /^\d+$/.test(k)) {
+        if (v !== null && /^\d+$/.test(v)) {
           scoresData.scores.push({
-            songId: v._id,
-            score: parseInt(k, 10),
+            participantId: k,
+            score: parseInt(v, 10),
           });
         }
       });
