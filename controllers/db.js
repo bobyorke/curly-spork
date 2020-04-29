@@ -172,7 +172,7 @@ async function submitScores(scoresData) {
   if (!scoresData.scores) { throw Error('scores missing'); }
   scoresData.roundId = mongoObjId(scoresData.roundId);
   scoresData.scores.forEach((s) => {
-    s.songId = mongoObjId(s.songId);
+    s.participantId = mongoObjId(s.participantId);
   });
   return (await db).collection('scores')
     .replaceOne(

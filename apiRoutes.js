@@ -102,7 +102,7 @@ router.post('/submitScores', (req, res) => {
     .catch((err) => { res.status(500).send(`Error submitting scores: ${err.message}`); });
 });
 
-router.get('/getScores/:scoresId/:roundId', (req, res) => {
+router.get('/getScores/:scoresId/:roundId?', (req, res) => {
   db.getScores(req.params.scoresId, req.params.roundId)
     .then((result) => {
       res.json(result);
