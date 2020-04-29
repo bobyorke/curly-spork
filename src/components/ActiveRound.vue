@@ -18,7 +18,7 @@
 export default {
   name: 'ActiveVoter',
   props: {
-    scores: Object,
+    scores: Array,
   },
 };
 </script>

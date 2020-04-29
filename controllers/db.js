@@ -301,7 +301,7 @@ async function getScoresTotal(scoresId) {
       throw err;
     });
   console.log(`Storing scores result in cache [${scoresId}]`);
-  // scoresCache[scoresId] = rslt;
+  scoresCache[scoresId] = rslt;
   return rslt;
 }
 
