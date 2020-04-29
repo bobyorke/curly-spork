@@ -240,11 +240,13 @@ async function getScoresTotal(scoresId) {
         },
       }
     },
+    { $sort: { 'activeRound._id': -1 } },
     {
       $group: {
         _id: '$scores.participantId',
         totalScore: { $sum: '$scores.score' },
         activeScore: { $sum: '$scores.activeScore' },
+        activeRoundId: { $first: '$activeRound._id' },
       },
     },
     {
@@ -279,8 +281,14 @@ async function getScoresTotal(scoresId) {
     },
     {
       $set: {
-        totalScore: { $ifNull: [ '$scores.totalScore', 0 ] },
-        activeScore: { $ifNull: [ '$scores.activeScore', 0 ] },
+        totalScore: '$scores.totalScore',
+        activeScore: { 
+          $cond: [
+            { $ne: [ '$scores.activeRoundId', null ] },
+            '$scores.activeScore',
+            null,
+          ],
+        },
       },
     },
     { $sort: { _id: 1 } },

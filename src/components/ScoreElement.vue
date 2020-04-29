@@ -4,7 +4,7 @@
     ref="score_follow"
   >
     <div class="active-container">
-      <div class="active rounded" v-if="score.activeScore > 0">
+      <div class="active rounded" v-if="score.activeScore !== null">
         {{ score.activeScore }}
       </div>
     </div>

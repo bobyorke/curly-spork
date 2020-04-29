@@ -24,7 +24,7 @@
         />
       </div>
     </div>
-    <div id="active-vote" v-if="activeScores.length > 0">
+    <div id="active-round" v-if="activeScores.length > 0">
       <ActiveRound
         :scores="activeScores"
       />
@@ -63,7 +63,7 @@ export default {
         .sort((a, b) => this.scoresSort('totalScore', a, b));
     },
     activeScores() {
-      return this.scores.filter((x) => x.activeScore > 0)
+      return this.scores.filter((sc) => sc.activeScore !== null)
         .sort((a, b) => this.scoresSort('activeScore', a, b));
     },
   },
@@ -125,7 +125,7 @@ html, body {
   height: 100%;
   margin: 0;
   background: #021636;
-  /*background-image: url('~@/assets/CV_BG_02.jpg');*/
+  background-image: url('~@/assets/pqpq_BG_02.jpg');
   background-repeat: no-repeat;
   background-position: right top;
 }
@@ -167,7 +167,7 @@ div#scoreboard {
   clear: both;
 }
 
-div#active-vote {
+div#active-round {
   position: absolute;
   top: 40%;
   left: 70%;
