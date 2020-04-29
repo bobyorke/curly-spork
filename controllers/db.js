@@ -242,7 +242,7 @@ async function getScoresTotal(scoresId) {
     },
     {
       $group: {
-        _id: '$scores.songId',
+        _id: '$scores.participantId',
         totalScore: { $sum: '$scores.score' },
         activeScore: { $sum: '$scores.activeScore' },
       },
@@ -250,7 +250,7 @@ async function getScoresTotal(scoresId) {
     {
       $match: {
         $expr: {
-          $eq: [ '$_id', '$$songId' ],
+          $eq: [ '$_id', '$$participantId' ],
         },
       },
     },
@@ -265,7 +265,7 @@ async function getScoresTotal(scoresId) {
       $lookup: {
         from: 'scores',
         let: { 
-          songId: '$_id',
+          participantId: '$_id',
         },
         pipeline: scoresPipeline,
         as: 'scores',
@@ -283,24 +283,17 @@ async function getScoresTotal(scoresId) {
         activeScore: { $ifNull: [ '$scores.activeScore', 0 ] },
       },
     },
-    // { $sort: { country: 1, year: -1 } },
     { $sort: { _id: 1 } },
     {
       $project: {
         _id: 1,
-        country: 1,
-        year: 1,
-        titleEnglish: 1,
-        titleLocal: 1,
-        performingArtist: 1,
-        credits: 1,
-        chosenBy: 1,
+        name: 1,
         totalScore: 1,
         activeScore: 1,
       },
     },
   ];
-  const rslt = (await db).collection('songs')
+  const rslt = (await db).collection('participants')
     .aggregate(queryPipeline)
     .toArray()
     .catch((err) => {
@@ -308,7 +301,7 @@ async function getScoresTotal(scoresId) {
       throw err;
     });
   console.log(`Storing scores result in cache [${scoresId}]`);
-  scoresCache[scoresId] = rslt;
+  // scoresCache[scoresId] = rslt;
   return rslt;
 }
 
