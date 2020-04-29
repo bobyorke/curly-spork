@@ -65,7 +65,7 @@ export default {
   },
   methods: {
     pointsArray(name) {
-      return [{ value: null, text: name }]
+      return [{ value: null, html: `[ ${name} ]` }]
         .concat(
           [...Array(35).keys()]
             .map((x) => ({
@@ -97,3 +97,6 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+</style>
