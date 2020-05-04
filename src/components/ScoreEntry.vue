@@ -69,7 +69,7 @@ export default {
     pointsArray(name) {
       return [{ value: null, html: `[ ${name} ]` }]
         .concat(
-          [...Array(35).keys()]
+          [...Array(65).keys()]
             .map((x) => ({
               value: x,
               text: x,

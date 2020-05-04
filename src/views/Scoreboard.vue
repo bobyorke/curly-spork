@@ -124,7 +124,7 @@ html, body {
   height: 100%;
   margin: 0;
   background: #021636;
-  background-image: url('~@/assets/pqpq_BG_02.jpg');
+  /*background-image: url('~@/assets/pqpq_BG_02.jpg');*/
   background-repeat: no-repeat;
   background-position: right top;
 }
