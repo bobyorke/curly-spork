@@ -16,7 +16,7 @@
     <div class="col-10">
       <div class="container-fluid" v-if="active || !$parent.activeRoundId">
         <div class="row">
-          <div class="col-12 col-lg-2" v-for="pt in participants" :key="pt._id">
+          <div class="col-12 col-lg-2" v-for="pt in participants" :key="pt.uuid">
             <b-select
               :options="pointsArray(pt.name)"
               v-model="scores[pt._id]"
