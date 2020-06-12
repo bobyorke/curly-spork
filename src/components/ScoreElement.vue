@@ -4,7 +4,11 @@
     ref="score_follow"
   >
     <div class="active-container">
-      <div class="active rounded" v-if="score.activeScore !== null">
+      <div
+        class="active rounded"
+        :class="{ 'active-smaller': hasDot(score.activeScore) }"
+        v-if="score.activeScore !== null"
+      >
         {{ score.activeScore }}
       </div>
     </div>
@@ -27,6 +31,15 @@ export default {
     return {
       publicPath: process.env.BASE_URL,
     };
+  },
+  methods: {
+    hasDot(x) {
+      try {
+        return /\./.test(x);
+      } catch {
+        return false;
+      }
+    },
   },
 };
 </script>
@@ -58,6 +71,10 @@ export default {
   line-height: 4vh;
   font-size: 3vh;
   font-weight: bold;
+}
+
+.active-smaller {
+  font-size: 2.5vh;
 }
 
 .rest-container {

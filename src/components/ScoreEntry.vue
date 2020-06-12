@@ -69,10 +69,10 @@ export default {
     pointsArray(name) {
       return [{ value: null, html: `[ ${name} ]` }]
         .concat(
-          [...Array(65).keys()]
+          [...Array(130).keys()]
             .map((x) => ({
-              value: x,
-              text: x,
+              value: x / 2.0,
+              text: x / 2.0,
             })),
         );
     },
@@ -84,10 +84,10 @@ export default {
         scores: [],
       };
       Object.entries(this.scores).forEach(([k, v]) => {
-        if (v !== null && /^\d+$/.test(v)) {
+        if (v !== null && /^\d*(?:\.\d*)?$/.test(v)) {
           scoresData.scores.push({
             participantId: k,
-            score: parseInt(v, 10),
+            score: parseFloat(v, 10),
           });
         }
       });
