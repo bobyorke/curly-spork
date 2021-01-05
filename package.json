@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@vue/eslint-config-airbnb": "^5.0.2",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "bootstrap": "^4.4.1",
     "bootstrap-vue": "^2.10.1",
     "connect-history-api-fallback": "^1.6.0",
